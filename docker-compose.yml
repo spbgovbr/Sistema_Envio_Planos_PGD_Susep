@@ -18,7 +18,7 @@ services:
       - "bdpgdsusep:/var/opt/mssql"
   
   apiprogramagestaosusep:
-    image: cadegovbr/apiprogramagestaosusep
+    image: cadegovbr/apiprogramagestaosusep:1.0
     container_name: apiprogramagestaosusep
     restart: always
     ports:
