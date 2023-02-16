@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalSalvaFuncoesDoPerfil"
+		widgetVar="modalSalvaFuncoesDoPerfilWidgetVar"
+		header="Funções do Perfil: #{perfilForm.perfilSalvo.detalhe}"
+		modal="true" closable="true" resizable="false"
+		style="position: fixed; top: 30%;" width="1000" height="500">
+
+		<h:panelGroup id="mantemFuncoesDoPerfil">
+
+			<p:panel id="painelFuncoesDoPerfil">
+
+				<p:messages globalOnly="true" showIcon="true" />
+
+				<h:panelGrid columns="2">
+
+					<h:outputLabel value="Função: " />
+
+					<h:panelGroup>
+
+						<p:autoComplete size="40" id="funcaoAutoComplete"
+							placeholder="Digite a descrição da Função"
+							value="#{perfilForm.funcaoSelecionada}"
+							completeMethod="#{perfilForm.autoCompleteFuncao}" var="_funcao"
+							itemLabel="#{_funcao.descricao}" itemValue="#{_funcao}"
+							dropdown="true" maxResults="10"
+							style="display: inline-flex !important;"
+							converterMessage="Conversão inválida."
+							converter="#{funcaoConverter}" forceSelection="false">
+							<p:ajax event="query" global="false" />
+							<p:ajax event="keypress" global="false" />
+							<p:ajax event="itemSelect" global="false"
+								listener="#{perfilForm.selecionarFuncao}" />
+						</p:autoComplete>
+
+						<p:spacer width="50" />
+
+						<p:commandButton value="Adicionar Função"
+							action="#{perfilForm.adicionarPerfilFuncao()}"
+							process="@this mantemFuncoesDoPerfil"
+							update="@form:msgsGrowl funcaoAutoComplete @form:listaPerfilFuncoes"
+							style="padding: 3px; color: #ffffff; background-color: #007bff; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+							styleClass="btn btn-primary btn-xs" />
+
+					</h:panelGroup>
+
+				</h:panelGrid>
+
+				<br />
+
+				<h:panelGroup id="listaPerfilFuncoes">
+
+					<h:panelGroup id="listaPerfilFuncoesRepeat"
+						rendered="#{perfilForm.perfilSalvo.funcoesDoPerfilLista.size() > 0}">
+
+						<div
+							style="background: linear-gradient(to bottom, #024762 0, #034F6D 100%); color: #fff !important; padding: 10px; border-radius: 3px;">Funções
+							do Perfil: #{perfilForm.perfilSalvo.detalhe}</div>
+
+						<p:dataTable id="dataTables-funcoes-perfis"
+							value="#{perfilForm.perfilSalvo.funcoesDoPerfilLista}"
+							var="_perfilFuncao" paginator="true" paginatorPosition="bottom"
+							rows="10" rowsPerPageTemplate="10,25,50,100"
+							paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							emptyMessage="Nenhum registro encontrado."
+							rendered="#{perfilForm.perfilSalvo.funcoesDoPerfilLista.size() gt 0}">
+
+							<p:column>
+
+								<f:facet name="header">
+
+									<h:outputText value="Função" />
+
+								</f:facet>
+
+								<h:panelGroup style="top: 8px; position: relative;">
+
+									<p:commandLink process="@this"
+										action="#{perfilForm.excluirPerfilFuncao(_perfilFuncao)}"
+										title="Excluir"
+										update="@form:listaPerfilFuncoes @form:dataTables-funcoes-perfis @form:msgsGrowl">
+										<i class="fa fa-trash"
+											style="color: red; font-size: 16px !important; margin-right: 3px;"></i>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{perfilFuncaoGerenciador.ativarDesativarPerfilFuncao(_perfilFuncao)}"
+										actionListener="#{perfilControlador.recarregarPerfil(_perfilFuncao.perfil)}"
+										title="#{_perfilFuncao.situacaoRegistro.detalhe}"
+										update="@form:listaPerfilFuncoes @form:dataTables-funcoes-perfis @form:msgsGrowl"
+										rendered="false">
+										<h:panelGroup
+											rendered="#{_perfilFuncao.situacaoRegistro eq utilsSituacaoRegistro.situacaoRegistroAtivo}">
+											<i class="fa fa-check-square"
+												style="color: #007bff; font-size: 16px !important; margin-right: 3px;"></i>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{_perfilFuncao.situacaoRegistro eq utilsSituacaoRegistro.situacaoRegistroInativo}">
+											<i class="fa fa-minus-square"
+												style="color: orange; font-size: 16px !important; margin-right: 3px;"></i>
+										</h:panelGroup>
+									</p:commandLink>
+
+									<h:outputLabel value="#{_perfilFuncao.funcao.descricao}"
+										style="font-size: 13px !important;" />
+
+								</h:panelGroup>
+
+							</p:column>
+
+							<p:column>
+
+								<f:facet name="header">
+									<h:outputText value="Alterar" style="cursor: pointer;"
+										title="Ativar/Inativar o registro" />
+								</f:facet>
+
+								<p:selectOneRadio
+									style=" text-indent: 5px; margin-bottom: 0; vertical-align: middle; border-style: hidden;"
+									value="#{_perfilFuncao.situacaoAlterar}">
+									<f:selectItems var="sp"
+										value="#{perfilForm.situacoesPermissao}" itemValue="#{sp}"
+										itemLabel="#{sp.detalhe}" />
+								</p:selectOneRadio>
+
+							</p:column>
+
+							<p:column>
+
+								<f:facet name="header">
+									<h:outputText value="Cadastrar" style="cursor: pointer;"
+										title="Cadastrar os dados do registro" />
+								</f:facet>
+
+								<p:selectOneRadio
+									style=" text-indent: 5px; margin-bottom: 0; vertical-align: middle; border-style: hidden;"
+									value="#{_perfilFuncao.situacaoCadastrar}">
+									<f:selectItems var="sp"
+										value="#{perfilForm.situacoesPermissao}" itemValue="#{sp}"
+										itemLabel="#{sp.detalhe}" />
+								</p:selectOneRadio>
+
+							</p:column>
+
+							<p:column>
+
+								<f:facet name="header">
+									<h:outputText value="Excluir" style="cursor: pointer;"
+										title="Excluir os dados do registro" />
+								</f:facet>
+
+								<p:selectOneRadio
+									style=" text-indent: 5px; margin-bottom: 0; vertical-align: middle; border-style: hidden;"
+									value="#{_perfilFuncao.situacaoExcluir}">
+									<f:selectItems var="sp"
+										value="#{perfilForm.situacoesPermissao}" itemValue="#{sp}"
+										itemLabel="#{sp.detalhe}" />
+								</p:selectOneRadio>
+
+							</p:column>
+
+							<p:column>
+
+								<f:facet name="header">
+									<h:outputText value="Visualizar" style="cursor: pointer;"
+										title="Visualizar/Detalhar os dados do registro" />
+								</f:facet>
+
+								<p:selectOneRadio
+									style=" text-indent: 5px; margin-bottom: 0; vertical-align: middle; border-style: hidden;"
+									value="#{_perfilFuncao.situacaoVisualizar}">
+									<f:selectItems var="sp"
+										value="#{perfilForm.situacoesPermissao}" itemValue="#{sp}"
+										itemLabel="#{sp.detalhe}" />
+								</p:selectOneRadio>
+
+							</p:column>
+
+						</p:dataTable>
+
+					</h:panelGroup>
+
+				</h:panelGroup>
+
+			</p:panel>
+
+			<div style="padding-top: 10px; padding-bottom: 20px;">
+
+				<p:commandButton value="Fechar" icon="ui-icon-close"
+					update="@form:painelPerfil"
+					onclick="PF('modalSalvaFuncoesDoPerfilWidgetVar').hide();"
+					style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+					styleClass="btn btn-default" />
+
+				<p:spacer width="15" />
+
+				<p:commandButton value="Salvar" icon="ui-icon-disk"
+					action="#{perfilAction.salvar()}"
+					update="mantemFuncoesDoPerfil @form:painelPerfil @form:msgsGrowl"
+					oncomplete="PF('modalSalvaFuncoesDoPerfilWidgetVar').hide();"
+					process="@this mantemFuncoesDoPerfil"
+					style="padding: 3px; color: #ffffff; background-color: #007bff; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+					styleClass="btn btn-primary btn-xs" />
+
+			</div>
+
+		</h:panelGroup>
+
+	</p:dialog>
+
+</ui:component>

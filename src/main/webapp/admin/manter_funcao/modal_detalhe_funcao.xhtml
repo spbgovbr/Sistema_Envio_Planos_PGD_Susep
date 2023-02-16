@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalDetalheFuncao"
+		widgetVar="modalDetalheFuncaoWidgetVar" header="Visualizar Função"
+		modal="true" closable="true" dynamic="true" width="800">
+
+		<p:panel header="Dados da Função">
+
+			<h:panelGrid columns="2">
+
+				<h:outputText value="Id: " styleClass="font-negrito" />
+				<h:outputText value="#{funcaoForm.funcaoSelecionada.id}" />
+
+				<h:outputText value="Descrição: " styleClass="font-negrito" />
+				<h:outputText value="#{funcaoForm.funcaoSelecionada.descricao}" />
+
+				<h:outputText value="Página de Acesso: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{funcaoForm.funcaoSelecionada.paginaAcesso.nome}" />
+
+				<h:outputText value="Detalhe: " styleClass="font-negrito" />
+				<h:outputText value="#{funcaoForm.funcaoSelecionada.detalhe}" />
+
+				<h:outputText value="Situação: " styleClass="font-negrito" />
+				<h:outputText id="visualSituacao"
+					value="#{funcaoForm.funcaoSelecionada.situacaoRegistro.descricao}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<div style="padding-top: 10px; padding-bottom: 20px;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				update="@form:painelFuncao"
+				onclick="PF('modalDetalheFuncaoWidgetVar').hide();"
+				style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+				styleClass="btn btn-default" />
+
+		</div>
+
+	</p:dialog>
+
+</ui:component>

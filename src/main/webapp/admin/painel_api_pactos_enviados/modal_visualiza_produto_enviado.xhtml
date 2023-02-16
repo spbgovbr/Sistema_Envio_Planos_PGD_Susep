@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalVisualizaProdutoEnviado"
+		widgetVar="modalVisualizaProdutoEnviadoWidgetVar" resizable="false"
+		header="Visualizar Atividade" modal="true" closable="true"
+		dynamic="true" style="position: fixed; top: 30%;" width="1000"
+		height="500">
+
+		<p:panel
+			header="Caso queira visualizar o Plano de Trabalho, então clique no botão [+] à direita."
+			collapsed="true" toggleable="true">
+			
+			<p:panel header="Participante:">
+
+				<h:panelGrid columns="4">
+
+					<h:outputText value="Id Unidade: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.codigoUnidadeExercicio}" />
+
+					<h:outputText value="Unidade: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.nomeUnidadeExercicio}" />
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="6">
+
+					<h:outputText value="Matrícula SIAPE: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.matriculaSiape}" />
+
+					<h:outputText value="CPF: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.cpf}" />
+
+					<h:outputText value="Nome: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.nomeParticipante}" />
+
+				</h:panelGrid>
+
+			</p:panel>
+			
+			<p:spacer height="10px" style="display: block;" />
+
+			<p:panel header="Plano de Trabalho:">
+
+				<h:panelGrid columns="6">
+
+					<h:outputText value="Id Plano: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.idPacto}" />
+
+					<h:outputText value="Modalidade: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.modalidadeExecucaoEnum.texto}" />
+
+					<h:outputText value="Entregue no Prazo? " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.entregueNoPrazo eq 'true' ? 'Sim' : 'Não'}" />
+
+				</h:panelGrid>
+
+			</p:panel>
+
+			<p:spacer height="10px" style="display: block;" />
+
+			<p:panel header="Planejamento:">
+
+				<h:panelGrid columns="6">
+
+					<h:outputText value="Semanal: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.cargaHorariaSemanal.intValue()} horas" />
+
+					<h:outputText value="Total: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.cargaHorariaTotal.intValue()} horas" />
+
+					<h:outputText value="Homologado: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.horasHomologadas.intValue()} horas" />
+
+				</h:panelGrid>
+
+			</p:panel>
+
+			<p:spacer height="10px" style="display: block;" />
+
+			<p:panel header="Período:">
+
+				<h:panelGrid columns="6">
+
+					<h:outputText value="Data Início: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.dataInicio}">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+					</h:outputText>
+
+					<h:outputText value="Data Fim: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.dataFim}">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+					</h:outputText>
+
+					<h:outputText value="Data Interrupção: " styleClass="font-negrito" />
+					<h:outputText
+						value="#{painelApiPactosEnviadosForm.produtoSelecionado.pacto.dataInterrupcao}">
+						<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+					</h:outputText>
+
+				</h:panelGrid>
+
+			</p:panel>
+
+		</p:panel>
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:separator />
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:panel header="Atividade:">
+
+			<h:panelGrid columns="2">
+
+				<h:outputText value="Descrição: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.nomeAtividade}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:panel header="Complexidade:">
+
+			<h:panelGrid columns="4">
+
+				<h:outputText value="Faixa de Complexidade: "
+					styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.faixaComplexidade}" />
+
+				<h:outputText value="Parâmetros de Complexidade: "
+					styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.parametrosComplexidade}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:panel header="Planejamento Presencial:">
+
+			<h:panelGrid columns="6">
+
+				<h:outputText value="Estimado: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.tempoPresencialEstimado.intValue()} horas" />
+
+				<h:outputText value="Programado: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.tempoPresencialProgramado.intValue()} horas" />
+
+				<h:outputText value="Executado: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.tempoPresencialExecutado.intValue()} horas" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:panel header="Planejamento Teletrabalho:">
+
+			<h:panelGrid columns="6">
+
+				<h:outputText value="Estimado: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.tempoTeletrabalhoEstimado.intValue()} horas" />
+
+				<h:outputText value="Programado: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.tempoTeletrabalhoProgramado.intValue()} horas" />
+
+				<h:outputText value="Executado: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.tempoTeletrabalhoExecutado.intValue()} horas" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:panel header="Avaliação:">
+
+			<h:panelGrid columns="8">
+
+				<h:outputText value="Data da Avaliação: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.dataAvaliacao}">
+					<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+				</h:outputText>
+
+				<h:outputText value="Avaliação: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.avaliacao}"
+					style="font-weight: bold; color: #{painelApiPactosEnviadosForm.produtoSelecionado.avaliacao gt 5 ? 'blue;' : 'red;'}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:panel header="Entrega Esperada:">
+
+			<h:panelGrid columns="1">
+
+				<h:outputText escape="false"
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.entregaEsperada}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<p:spacer height="10px" style="display: block;" />
+
+		<p:panel header="Justificativa:">
+
+			<h:panelGrid columns="1">
+
+				<h:outputText escape="false"
+					value="#{painelApiPactosEnviadosForm.produtoSelecionado.justificativa}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<div style="padding-top: 10px; padding-bottom: 20px;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				update="@form:painelApiPgCadePactosEnviados"
+				onclick="PF('modalVisualizaProdutoEnviadoWidgetVar').hide();"
+				style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+				styleClass="btn btn-default" />
+
+		</div>
+
+	</p:dialog>
+
+</ui:component>

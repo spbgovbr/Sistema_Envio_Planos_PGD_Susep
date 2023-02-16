@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalDetalheProdutosEnviados"
+		widgetVar="modalDetalheProdutosEnviadosWidgetVar" resizable="false"
+		header="Visualizar Atividades" modal="true" closable="true"
+		dynamic="true" style="position: fixed; top: 30%;" width="1200"
+		height="500">
+
+		<p:panel id="panelPlanoTrabalho" header="Plano de Trabalho:">
+
+			<p:dataTable value="1" var="_pacto">
+			
+				<p:column headerText="Participante" width="40%">
+					<div class="center">
+						<h:outputText
+							value="Unidade: #{painelApiPactosEnviadosForm.pactoSelecionado.siglaUnidadeExercicio}"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText
+							value="Matrícula SIAPE: #{painelApiPactosEnviadosForm.pactoSelecionado.matriculaSiape}" />
+						<br />
+						<h:outputText
+							value="CPF: #{painelApiPactosEnviadosForm.pactoSelecionado.cpf}" />
+						<br />
+						<h:outputText
+							value="Nome: #{painelApiPactosEnviadosForm.pactoSelecionado.nomeParticipante}"
+							style="font-weight: bold;" />
+					</div>
+				</p:column>
+
+				<p:column headerText="Plano" width="20%">
+					<div class="center">
+						<h:outputText
+							value="Id Plano: #{painelApiPactosEnviadosForm.pactoSelecionado.idPacto}" />
+						<br />
+						<h:outputText
+							value="Modalidade: #{painelApiPactosEnviadosForm.pactoSelecionado.modalidadeExecucaoEnum.texto}" />
+						<br />
+						<h:outputText value="Entregue no Prazo? "
+							style="font-weight: bold;" />
+						<h:outputText
+							style="font-weight: bold; color: #{painelApiPactosEnviadosForm.pactoSelecionado.entregueNoPrazo eq 'true' ? 'green;' : 'red;'}"
+							value="#{painelApiPactosEnviadosForm.pactoSelecionado.entregueNoPrazo eq 'true' ? 'Sim' : 'Não'}" />
+					</div>
+				</p:column>
+
+				<p:column headerText="Planejamento" width="20%">
+					<div class="center">
+						<h:outputText value="Semanal: " />
+						<h:outputText
+							value="#{painelApiPactosEnviadosForm.pactoSelecionado.cargaHorariaSemanal.intValue()} horas"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Total: " />
+						<h:outputText
+							value="#{painelApiPactosEnviadosForm.pactoSelecionado.cargaHorariaTotal.intValue()} horas"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Homologado: " />
+						<h:outputText
+							value="#{painelApiPactosEnviadosForm.pactoSelecionado.horasHomologadas.intValue()} horas"
+							style="font-weight: bold;" />
+					</div>
+				</p:column>
+
+				<p:column headerText="Período" width="20%">
+					<div class="center">
+						<h:outputText value="Data Início: " />
+						<h:outputText
+							value="#{painelApiPactosEnviadosForm.pactoSelecionado.dataInicio}"
+							style="font-weight: bold;">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+						</h:outputText>
+						<br />
+						<h:outputText value="Data Fim: " />
+						<h:outputText
+							value="#{painelApiPactosEnviadosForm.pactoSelecionado.dataFim}"
+							style="font-weight: bold;">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+						</h:outputText>
+						<br />
+						<h:outputText value="Data Interrupção: "
+							rendered="#{painelApiPactosEnviadosForm.pactoSelecionado.dataInterrupcao ne null}"
+							style="font-weight: bold;" />
+						<h:outputText value="#{_pacto.dataInterrupcao}"
+							rendered="#{painelApiPactosEnviadosForm.pactoSelecionado.dataInterrupcao ne null}"
+							style="font-weight: bold; color: red;">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+						</h:outputText>
+					</div>
+				</p:column>
+
+			</p:dataTable>
+
+		</p:panel>
+
+		<p:spacer height="20px" style="display: block;" />
+
+		<p:panel header="Atividades do Plano:">
+
+			<p:dataTable id="dataTableListaProduto" filterDelay="0"
+				widgetVar="dataTableListaProdutoWidgetVar"
+				value="#{painelApiPactosEnviadosForm.pactoSelecionado.produtos}"
+				var="_produto" paginator="true" rows="10"
+				sortBy="#{_produto.idProduto}"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+				rowsPerPageTemplate="10,20,30,40,50,100" paginatorPosition="bottom"
+				emptyMessage="Nenhum registro encontrado.">
+
+				<p:ajax event="page" global="false"
+					process="@this @form:painelApiPgCadePactosEnviados" />
+
+				<p:column headerText="Atividade" width="35%">
+					<div class="center">
+						<h:outputText value="Atividade: " />
+						<h:outputText value="#{_produto.nomeAtividade}"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Faixa de Complexidade: " />
+						<h:outputText value="#{_produto.faixaComplexidade}"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Parâmetros de Complexidade: " />
+						<h:outputText value="#{_produto.parametrosComplexidade}"
+							style="font-weight: bold;" />
+					</div>
+				</p:column>
+				
+				<p:column headerText="Planejamento Presencial" width="20%">
+					<div class="center">
+						<h:outputText value="Estimado: " />
+						<h:outputText
+							value="#{_produto.tempoPresencialEstimado.intValue()} horas"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Programado: " />
+						<h:outputText
+							value="#{_produto.tempoPresencialProgramado.intValue()} horas"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Executado: " />
+						<h:outputText
+							value="#{_produto.tempoPresencialExecutado.intValue()} horas"
+							style="font-weight: bold;" />
+					</div>
+				</p:column>
+
+				<p:column headerText="Planejamento Teletrabalho" width="20%">
+					<div class="center">
+						<h:outputText value="Estimado: " />
+						<h:outputText
+							value="#{_produto.tempoTeletrabalhoEstimado.intValue()} horas"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Programado: " />
+						<h:outputText
+							value="#{_produto.tempoTeletrabalhoProgramado.intValue()} horas"
+							style="font-weight: bold;" />
+						<br />
+						<h:outputText value="Executado: " />
+						<h:outputText
+							value="#{_produto.tempoTeletrabalhoExecutado.intValue()} horas"
+							style="font-weight: bold;" />
+					</div>
+				</p:column>
+
+				<p:column headerText="Entregas" width="20%">
+					<div class="center">
+						<h:outputText value="Data da Avaliação: " />
+						<h:outputText value="#{_produto.dataAvaliacao}"
+							style="font-weight: bold;">
+							<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+						</h:outputText>
+						<br />
+						<h:outputText value="Avaliação: " />
+						<h:outputText value="#{_produto.avaliacao}"
+							style="font-weight: bold; color: #{_produto.avaliacao gt 5 ? 'blue;' : 'red;'}" />
+					</div>
+				</p:column>
+
+				<p:column headerText="Ações" width="5%">
+
+					<div class="center">
+
+						<p:commandLink process="@this"
+							action="#{painelApiPactosEnviadosAction.selecionarProduto(_produto)}"
+							title="Visualizar" update="@form:modalVisualizaProdutoEnviado"
+							oncomplete="PF('modalVisualizaProdutoEnviadoWidgetVar').show();"
+							rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_API_PLANOS_ENVIADOS')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+							<i class="fa fa-search-plus"
+								style="font-size: 16px !important; margin-right: 10px;"></i>
+						</p:commandLink>
+
+					</div>
+
+				</p:column>
+
+			</p:dataTable>
+
+		</p:panel>
+
+		<div style="padding-top: 10px; padding-bottom: 20px;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				update="@form:painelApiPgCadePactosEnviados"
+				onclick="PF('modalDetalheProdutosEnviadosWidgetVar').hide();"
+				style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+				styleClass="btn btn-default" />
+
+		</div>
+
+	</p:dialog>
+
+</ui:component>

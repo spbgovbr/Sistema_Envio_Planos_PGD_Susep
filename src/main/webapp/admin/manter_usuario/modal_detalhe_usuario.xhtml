@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalDetalheUsuario" modal="true" closable="true"
+		widgetVar="modalDetalheUsuarioWidgetVar" header="Visualizar Usuário">
+
+		<p:panel header="Dados do Usuário">
+
+			<h:panelGrid columns="4">
+
+				<h:outputText value="Id: " styleClass="font-negrito" />
+				<h:outputText value="#{usuarioForm.usuarioSelecionado.id}" />
+
+				<h:outputText value="Nome: " styleClass="font-negrito" />
+				<h:outputText value="#{usuarioForm.usuarioSelecionado.pessoa.nome}" />
+
+				<h:outputText value="E-mail: " styleClass="font-negrito" />
+				<h:outputText value="#{usuarioForm.usuarioSelecionado.email}" />
+
+				<h:outputText value="CPF: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{usuarioForm.usuarioSelecionado.pessoa.numeroCPF}" />
+
+				<h:outputText value="Situação: " styleClass="font-negrito" />
+				<h:outputText
+					value="#{usuarioForm.usuarioSelecionado.situacaoRegistro.descricao}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<div style="padding-top: 10px; padding-bottom: 20px;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				update="@form:painelUsuario"
+				onclick="PF('modalDetalheUsuarioWidgetVar').hide();"
+				style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+				styleClass="btn btn-default" />
+
+		</div>
+
+	</p:dialog>
+
+</ui:component>

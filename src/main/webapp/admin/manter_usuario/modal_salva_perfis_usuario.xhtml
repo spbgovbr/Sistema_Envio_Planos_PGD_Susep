@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalSalvaPerfisDoUsuario"
+		widgetVar="modalSalvaPerfisDoUsuarioWidgetVar"
+		header="Manter Perfis do Usuário: #{usuarioForm.usuarioSelecionado.pessoa.nome}"
+		modal="true" closable="true" width="800">
+
+		<h:panelGroup id="mantemPerfisDoUsuario">
+
+			<p:panel id="painelPerfisDoUsuario">
+
+				<p:messages globalOnly="true" showIcon="true" />
+
+				<div
+					style="height: 100%; min-height: 100%; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center;">
+
+					<h:panelGrid columns="1" style="width: 100%;">
+
+						<p:pickList value="#{usuarioForm.perfisDoUsuarioLista}"
+							converter="#{perfilDataModelConverter}" var="_perfil"
+							itemValue="#{_perfil}" showCheckbox="true"
+							addLabel="Adicionar Perfil"
+							addAllLabel="Adicionar Todos os Perfis"
+							removeLabel="Remover Perfil"
+							removeAllLabel="Remover Todos os Perfis"
+							itemLabel="#{perfilDataModelConverter.getPerfilPesquisado(_perfil).descricao}"
+							style="width: 100%;">
+
+							<f:facet name="sourceCaption">Perfis Disponíveis</f:facet>
+
+							<f:facet name="targetCaption">Perfis do Usuário</f:facet>
+
+							<p:ajax event="transfer"
+								listener="#{usuarioForm.transferirPerfil}"
+								update="@form:painelPerfisDoUsuario @form:msgsGrowl" />
+
+						</p:pickList>
+
+					</h:panelGrid>
+
+				</div>
+
+			</p:panel>
+
+			<div style="padding-top: 10px; padding-bottom: 20px;">
+
+				<p:commandButton value="Fechar" icon="ui-icon-close"
+					update="@form:painelUsuario"
+					onclick="PF('modalSalvaPerfisDoUsuarioWidgetVar').hide();"
+					style="padding: 1px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+					styleClass="btn btn-default" />
+
+				<p:spacer width="15" />
+
+				<p:commandButton value="Salvar" icon="ui-icon-disk"
+					action="#{usuarioAction.atualizar(usuarioForm.usuarioSelecionado)}"
+					process="@this mantemPerfisDoUsuario" update="@form:msgsGrowl"
+					style="padding: 1px; color: #ffffff; background-color: #007bff; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+					styleClass="btn btn-primary btn-xs" />
+
+			</div>
+
+		</h:panelGroup>
+
+	</p:dialog>
+
+</ui:component>

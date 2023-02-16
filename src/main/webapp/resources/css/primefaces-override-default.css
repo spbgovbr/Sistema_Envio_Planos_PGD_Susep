@@ -1,0 +1,39 @@
+.ui-state-highlight .ui-icon {
+	background-image:
+		url("#{facesContext.externalContext.requestContextPath}/javax.faces.resource/images/ui-icons_333333_256x240.png.jsf?ln=primefaces-bootstrap");
+}
+
+.ui-growl {
+	position: fixed !important;
+	top: 20% !important;
+	right: 30px !important;
+	width: 40% !important;
+}
+
+.ui-growl-item-container {
+	opacity: 1 !important;
+}
+
+.ui-growl-title {
+	padding: 0 0 10px 10px !important;
+	display: block !important;
+}
+
+.ui-growl-message {
+	padding: 0 0 5px 0 !important;
+	width: 400px !important;
+	float: left !important;
+}
+
+.ui-growl-message p {
+	font-weight: bold !important;
+	margin-left: 10px !important;
+}
+
+.ui-growl-icon-close {
+	position: absolute;
+	top: 5px;
+	right: 3px;
+	cursor: pointer;
+	display: block !important;
+}

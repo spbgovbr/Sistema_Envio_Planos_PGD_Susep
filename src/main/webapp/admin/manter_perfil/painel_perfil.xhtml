@@ -1,0 +1,28 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">
+    	Perfis
+    </ui:define>
+
+	<ui:define name="content">
+
+		<h:panelGroup id="painelPerfil">
+
+			<ui:include src="/admin/manter_perfil/painel_pesquisa_perfil.xhtml" />
+
+		</h:panelGroup>
+
+		<ui:include src="/admin/manter_perfil/modal_detalhe_perfil.xhtml" />
+
+		<ui:include src="/admin/manter_perfil/modal_salva_perfil.xhtml" />
+
+		<ui:include
+			src="/admin/manter_perfil/modal_salva_funcoes_perfil.xhtml" />
+
+	</ui:define>
+
+</ui:composition>

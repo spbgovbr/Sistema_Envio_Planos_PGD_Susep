@@ -1,0 +1,94 @@
+td, th {
+	padding: 10px !important;
+}
+
+.font-negrito {
+	font-weight: bold;
+}
+
+.campo-obrigatorio {
+	color: red;
+	font-weight: bold;
+	margin-right: 5px;
+}
+
+.center {
+	text-align: center;
+}
+
+ul.circle {
+	list-style-type: circle;
+	margin-left: 5%;
+}
+
+ul.decimal {
+	list-style-type: decimal;
+	margin-left: 5%;
+}
+
+.coluna1_10 {
+	width: 10%;
+}
+
+.coluna1_12 {
+	width: 12%;
+}
+
+.coluna1_15 {
+	width: 15%;
+}
+
+.coluna1_20 {
+	width: 20%;
+}
+
+.coluna1_63 {
+	width: 63%;
+}
+
+.coluna2_37 {
+	width: 37%;
+}
+
+.coluna2_35 {
+	width: 35%;
+}
+
+.coluna2_38 {
+	width: 38%;
+}
+
+.coluna2_40 {
+	width: 40%;
+}
+
+.coluna2_80 {
+	width: 80%;
+}
+
+.coluna2_80 {
+	width: 80%;
+}
+
+.coluna2_85 {
+	width: 85%;
+}
+
+.coluna3_5 {
+	width: 5%;
+}
+
+.coluna3_10 {
+	width: 10%;
+}
+
+.coluna4_40 {
+	width: 40%;
+}
+
+.fixed-top {
+	position: initial !important;
+}
+.page-section {
+    padding: 4rem 0 !important;
+}

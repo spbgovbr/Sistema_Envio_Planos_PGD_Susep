@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalDetalheAPIPGCade"
+		widgetVar="modalDetalheAPIPGCadeWidgetVar" header="Dados Processados"
+		resizable="false" modal="true" closable="true" dynamic="true"
+		height="200" width="650">
+
+		<p:panel header="Qtd. de Registros:">
+
+			<h:panelGrid columns="4">
+
+				<h:outputText value="Qtd. Planos de Trabalhos: "
+					styleClass="font-negrito" />
+				<h:outputText value="#{apiPgCadeForm.qtdPlanos} registros" />
+
+				<h:outputText value="Qtd. Atividades: " styleClass="font-negrito" />
+				<h:outputText value="#{apiPgCadeForm.qtdAtividades} registros" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<div style="padding-top: 20px; padding-bottom: 20px;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				onclick="PF('modalDetalheAPIPGCadeWidgetVar').hide();"
+				style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+				styleClass="btn btn-default" />
+
+		</div>
+
+	</p:dialog>
+
+</ui:component>

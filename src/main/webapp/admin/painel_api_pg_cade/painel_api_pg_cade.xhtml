@@ -1,0 +1,36 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">
+    	API PG.Cade
+    </ui:define>
+
+	<ui:define name="content">
+
+		<h:panelGroup id="painelApiPgCade">
+
+			<ui:include
+				src="/admin/painel_api_pg_cade/painel_pesquisa_api_pg_cade.xhtml" />
+
+		</h:panelGroup>
+
+		<ui:include src="/admin/painel_api_pg_cade/modal_detalhe_pacto.xhtml" />
+
+		<ui:include
+			src="/admin/painel_api_pg_cade/modal_detalhe_produto.xhtml" />
+
+		<ui:include
+			src="/admin/painel_api_pg_cade/modal_visualiza_produto.xhtml" />
+
+		<ui:include src="/admin/modais/modal_tarefa_validacao.xhtml" />
+
+		<ui:include src="/admin/modais/modal_error_response.xhtml" />
+		
+		<ui:include src="/admin/modais/modal_detalhe_api_pg_cade.xhtml" />
+
+	</ui:define>
+
+</ui:composition>

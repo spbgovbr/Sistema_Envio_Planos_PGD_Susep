@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<f:event type="preRenderComponent"
+			listener="#{agendamentoAction.init}" />
+	</f:metadata>
+
+	<div class="container">
+
+		<h2
+			class="page-section-heading text-center text-uppercase text-secondary mb-0">Agendamento</h2>
+
+		<div class="divider-custom">
+			<div class="divider-custom-line"></div>
+			<div class="divider-custom-icon">
+				<i class="fas fa-calendar-alt"></i>
+			</div>
+			<div class="divider-custom-line"></div>
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-calendar" style="margin-right: 2px;"></i>
+						Informações sobre o último Agendamento de Envio Planos de
+						Trabalhos
+					</div>
+
+					<div class="card-body">
+
+						<h:panelGroup
+							rendered="#{agendamentoForm.listaUltimosRegistrosAgendamento ne null and agendamentoForm.listaUltimosRegistrosAgendamento.size() gt 0}">
+
+							<ul class="circle" style="margin: 0; padding: 0 0 0 15px;">
+								<ui:repeat var="_ultimoAgendamento"
+									value="#{agendamentoForm.listaUltimosRegistrosAgendamento}">
+									<li><h:outputLabel
+											value="#{_ultimoAgendamento.descricaoAcao}"
+											style="font-weight: bold;" /></li>
+								</ui:repeat>
+							</ul>
+
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{agendamentoForm.listaUltimosRegistrosAgendamento eq null or agendamentoForm.listaUltimosRegistrosAgendamento.size() == 0}">
+
+							<div class="alert alert-warning" style="margin-bottom: 0px;">
+								<strong>Nenhum registro encontrado.</strong>
+							</div>
+
+						</h:panelGroup>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-clock" style="margin-right: 2px;"></i>
+						Configuração do Agendamento do Envio dos Planos de Trabalhos
+					</div>
+
+					<div class="card-body">
+
+						<h:panelGroup id="panelParams">
+
+							<ul class="circle" style="margin: 0; padding: 0 0 0 15px;">
+								<li><h:outputLabel value="Observação 1: "
+										style="font-weight: bold; color: red;" /> <p:spacer
+										width="5px" /> <h:outputLabel
+										value="A opção 'Enviar Todos os Planos de Trabalho' irá enviar todos os Planos de Trabalho imediatamente (sem prévio agendamento) e também irá bloquear a tela por um longo período de tempo até o término da tarefa de envio."
+										style="font-weight: bold; display: inline;" /></li>
+								<p:spacer height="10px" style="display: block;" />
+								<li><h:outputLabel value="Observação 2: "
+										style="font-weight: bold; color: red;" /> <p:spacer
+										width="5px" /> <h:outputLabel
+										value="Evite agendar o envio dos planos em horários úteis. Se o Sistema do Programa de Gestão estiver em uso no momento da execução do agendamento, o envio dos planos poderá ser interrompido."
+										style="font-weight: bold; display: inline;" /></li>
+								<p:spacer height="10px" style="display: block;" />
+								<h:panelGroup
+									rendered="#{agendamentoForm.parametroStatusAgendamento.valor eq '0'}">
+									<li><h:outputText value="Agendamento Cancelado"
+											style="color: #dc3545;" styleClass="font-negrito" /></li>
+								</h:panelGroup>
+								<h:panelGroup
+									rendered="#{agendamentoForm.parametroStatusAgendamento.valor eq '1'}">
+									<li><h:outputText value="Agendamento Salvo"
+											style="color: #17a2b8;" styleClass="font-negrito" /></li>
+								</h:panelGroup>
+							</ul>
+
+							<p:spacer height="20px" style="display: block;" />
+
+							<p:panel header="Período:">
+
+								<h:panelGrid columns="6">
+
+									<h:outputText value="Dia: " styleClass="font-negrito" />
+
+									<p:selectOneMenu style="min-width: 100px !important;"
+										value="#{agendamentoForm.diaAgendamento}">
+										<f:selectItems var="da"
+											value="#{agendamentoForm.enumDiasAgendamento}"
+											itemValue="#{da}" itemLabel="#{da.descricao}" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Mês: " styleClass="font-negrito" />
+
+									<p:selectOneMenu style="min-width: 150px !important;"
+										value="#{agendamentoForm.mesAgendamento}">
+										<f:selectItems var="ma"
+											value="#{agendamentoForm.enumMesesAgendamento}"
+											itemValue="#{ma}" itemLabel="#{ma.descricao}" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Dia da Semana: " styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:selectOneMenu style="min-width: 200px !important;"
+										value="#{agendamentoForm.diaSemanaAgendamento}"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}">
+										<f:selectItems var="dsa"
+											value="#{agendamentoForm.enumDiasSemanaAgendamento}"
+											itemValue="#{dsa}" itemLabel="#{dsa.descricao}" />
+									</p:selectOneMenu>
+
+								</h:panelGrid>
+
+							</p:panel>
+
+							<p:spacer height="20px" style="display: block;" />
+
+							<p:panel header="Horário:">
+
+								<h:panelGrid columns="4">
+
+									<h:outputText value="Horas: " styleClass="font-negrito" />
+
+									<p:selectOneMenu style="min-width: 150px !important;"
+										value="#{agendamentoForm.horasAgendamento}">
+										<f:selectItems var="ha"
+											value="#{agendamentoForm.enumHorasAgendamento}"
+											itemValue="#{ha}" itemLabel="#{ha.descricao}" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Minutos: " styleClass="font-negrito" />
+
+									<p:selectOneMenu style="min-width: 180px !important;"
+										value="#{agendamentoForm.minutosAgendamento}">
+										<f:selectItems var="ma"
+											value="#{agendamentoForm.enumMinutosAgendamento}"
+											itemValue="#{ma}" itemLabel="#{ma.descricao}" />
+									</p:selectOneMenu>
+
+								</h:panelGrid>
+
+							</p:panel>
+
+							<p:spacer height="30px" style="display: block;" />
+
+							<p:commandButton value="Cancelar" icon="ui-icon-stop"
+								process="@this panelParams"
+								update="@form:painelAgendamento @form:msgsGrowl"
+								action="#{agendamentoForm.pararAgendamento()}"
+								style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+								styleClass="btn btn-danger btn-xs"
+								rendered="#{agendamentoForm.parametroStatusAgendamento.valor eq '1' and usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_AGENDAMENTO')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+
+							<p:spacer width="30px" />
+
+							<p:commandButton value="Salvar" icon="ui-icon-play"
+								process="@this panelParams"
+								update="@form:painelAgendamento @form:msgsGrowl"
+								action="#{agendamentoForm.iniciarAgendamento()}"
+								style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+								styleClass="btn btn-info btn-xs"
+								rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_AGENDAMENTO')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+
+							<p:spacer width="30px" />
+
+							<p:commandButton value="Enviar Todos os Planos de Trabalho"
+								icon="ui-icon-play" process="@this panelParams"
+								update="@form:painelAgendamento @form:msgsGrowl"
+								action="#{agendamentoForm.enviarTodosPlanosTrabalho()}"
+								style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none; float: right;"
+								styleClass="btn btn-success btn-xs"
+								rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_AGENDAMENTO')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+
+						</h:panelGroup>
+
+					</div>
+
+					<div class="card-footer small text-muted">Clique em 'Salvar'
+						para agendar o envio dos planos de acordo com os parâmetros
+						informados ou então clique em 'Cancelar' para interromper o
+						agendamento atual.</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+		//<![CDATA[
+			
+           	$(document).ready(function () {
+           	});
+           	
+       	//]]>
+   	</script>
+
+</ui:component>

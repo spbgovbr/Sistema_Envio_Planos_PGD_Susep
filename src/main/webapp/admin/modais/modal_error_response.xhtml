@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="https://joinfaces.org/security">
+
+	<p:dialog id="modalErrorResponse"
+		widgetVar="modalErrorResponseWidgetVar" resizable="false" modal="true"
+		closable="true" responsive="true" header="Detalhar Erros"
+		style="min-width: 50%; max-width: 50%;" height="350px">
+
+		<ui:repeat var="_error" varStatus="status"
+			value="#{ajudanteMensagens.responseJsonApiPGDME.detail}">
+
+			<p:panel header="Erro n.#{status.index + 1}">
+
+				<p:spacer height="5px" style="display: block;" />
+
+				<h:outputLabel value="Tipo: #{_error.type}"
+					style="font-weight: bold; color: red;" />
+
+				<p:spacer height="5px" style="display: block;" />
+
+				<h:outputLabel value="Mensagem: #{_error.msg}"
+					style="font-weight: bold;" />
+
+				<p:spacer height="5px" style="display: block;" />
+
+				<h:outputLabel value="Detalhes:" style="font-weight: bold;" />
+
+				<p:spacer height="5px" style="display: block;" />
+
+				<ui:repeat var="_loc" varStatus="status" value="#{_error.loc}">
+
+					<h:outputLabel value="#{_loc}" />
+
+					<p:spacer height="5px" style="display: block;" />
+
+				</ui:repeat>
+
+			</p:panel>
+
+			<p:spacer height="10px" style="display: block;" />
+
+		</ui:repeat>
+
+		<p:spacer height="30px" style="display: block;" />
+
+		<h:panelGrid columns="1" style="width: 30%;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				style="padding: 3px;"
+				onclick="PF('modalErrorResponseWidgetVar').hide();"
+				styleClass="btn btn-default btn-xs btn-pf" process="@this" />
+
+		</h:panelGrid>
+
+	</p:dialog>
+
+</ui:component>

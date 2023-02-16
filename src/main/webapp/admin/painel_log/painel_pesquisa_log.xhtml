@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<f:event type="preRenderComponent" listener="#{logAction.init}" />
+	</f:metadata>
+
+	<div class="container">
+
+		<h2
+			class="page-section-heading text-center text-uppercase text-secondary mb-0">Logs</h2>
+
+		<div class="divider-custom">
+			<div class="divider-custom-line"></div>
+			<div class="divider-custom-icon">
+				<i class="fas fa-database"></i>
+			</div>
+			<div class="divider-custom-line"></div>
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-table" style="margin-right: 2px;"></i> Registros
+					</div>
+
+					<div class="card-body">
+
+						<p:dataTable id="dataTableListaLog"
+							widgetVar="dataTableListaLogWidgetVar"
+							value="#{logForm.listaLog}"
+							filteredValue="#{logForm.listaFiltradaLog}" var="_log"
+							paginator="true" rows="10" filterDelay="0"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,20,30,40,50,100"
+							paginatorPosition="bottom"
+							emptyMessage="Nenhum registro encontrado.">
+
+							<p:ajax event="filter" global="false"
+								process="@this @form:painelLog" />
+
+							<p:ajax event="page" global="false"
+								process="@this @form:painelLog" />
+
+							<f:facet name="header">
+								<p:outputPanel>
+									<i class="fa fa-search"
+										style="font-size: 16px !important; margin-right: 3px;"></i>
+									<p:inputText id="globalFilter"
+										onkeyup="PF('dataTableListaLogWidgetVar').filter()"
+										style="width:70%;" placeholder="Digite para pesquisar...">
+										<p:ajax event="keyup" global="false"
+											process="@this @form:painelLog" />
+										<p:ajax event="keydown" global="false"
+											process="@this @form:painelLog" />
+										<p:ajax event="keypress" global="false"
+											process="@this @form:painelLog" />
+									</p:inputText>
+								</p:outputPanel>
+							</f:facet>
+							
+							<p:column headerText="Nível" width="14%">
+								<div class="center">
+									<h:outputText value="#{_log.nivelAcao.detalhe}" />
+								</div>
+							</p:column>
+							
+							<p:column headerText="Tipo" width="14%">
+								<div class="center">
+									<h:outputText value="#{_log.tipoAcao.detalhe}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Usuário" width="15%"
+								filterBy="#{_log.dadosParaBuscaTextual}"
+								filterMatchMode="contains"
+								filterStyle="display:none; visibility:hidden;">
+								<div class="center">
+									<h:outputText value="#{_log.usuario.pessoa.nome}" />
+								</div>
+							</p:column>
+							
+							<p:column headerText="Data/Horário" width="16%">
+								<div class="center">
+									<h:outputText value="#{_log.dataAcao}">
+										<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
+											timeZone="America/Sao_Paulo" type="both" />
+									</h:outputText>
+								</div>
+							</p:column>
+
+							<p:column headerText="Detalhe" width="33%">
+								<div class="center">
+									<h:outputText
+										value="#{ajudanteProjeto.resumirString(_log.descricaoAcao, 100, true)}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Ações" width="8%">
+								<div class="center">
+									<p:commandLink process="@this"
+										action="#{logAction.selecionar(_log)}" title="Visualizar"
+										update="@form:modalDetalheLog"
+										oncomplete="PF('modalDetalheLogWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_LOGS')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-search-plus"
+											style="font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+								</div>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+					<div class="card-footer small text-muted">Logs Registrados.</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+		//<![CDATA[
+			
+           	$(document).ready(function () {
+           	});
+           	
+       	//]]>
+   	</script>
+
+</ui:component>

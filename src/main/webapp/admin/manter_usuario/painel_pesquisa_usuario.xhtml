@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<f:event type="preRenderComponent" listener="#{usuarioAction.init}" />
+	</f:metadata>
+
+	<div class="container">
+
+		<h2
+			class="page-section-heading text-center text-uppercase text-secondary mb-0">Usuários</h2>
+
+		<div class="divider-custom">
+			<div class="divider-custom-line"></div>
+			<div class="divider-custom-icon">
+				<i class="fas fa-user-edit"></i>
+			</div>
+			<div class="divider-custom-line"></div>
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-table" style="margin-right: 2px;"></i> Registros
+					</div>
+
+					<div class="card-body">
+
+						<p:dataTable id="dataTableListaUsuario"
+							widgetVar="dataTableListaUsuarioWidgetVar"
+							value="#{usuarioForm.listaUsuario}"
+							filteredValue="#{usuarioForm.listaFiltradaUsuario}"
+							var="_usuario" paginator="true" rows="10" filterDelay="0"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,20,30,40,50,100"
+							paginatorPosition="bottom"
+							emptyMessage="Nenhum registro encontrado.">
+
+							<p:ajax event="filter" global="false"
+								process="@this @form:painelUsuario" />
+
+							<p:ajax event="page" global="false"
+								process="@this @form:painelUsuario" />
+
+							<f:facet name="header">
+								<p:outputPanel>
+									<i class="fa fa-search"
+										style="font-size: 16px !important; margin-right: 3px;"></i>
+									<p:inputText id="globalFilter"
+										onkeyup="PF('dataTableListaUsuarioWidgetVar').filter()"
+										style="width:70%;" placeholder="Digite para pesquisar...">
+										<p:ajax event="keyup" global="false"
+											process="@this @form:painelUsuario" />
+										<p:ajax event="keydown" global="false"
+											process="@this @form:painelUsuario" />
+										<p:ajax event="keypress" global="false"
+											process="@this @form:painelUsuario" />
+									</p:inputText>
+									<p:commandButton value="Novo" icon="ui-icon-plus"
+										process="@this" action="#{usuarioForm.novoUsuario()}"
+										style="color: #ffffff; background-color: #4e73df; text-shadow: none; margin: 0; box-shadow: none; background-image: none; margin-left: 10px; height: 30px; position: relative; top: -1px;"
+										update="@form:painelUsuario @form:modalSalvaUsuario"
+										oncomplete="PF('modalSalvaUsuarioWidgetVar').show();"
+										styleClass="btn btn-primary"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_USUARIOS')).situacaoCadastrar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column headerText="Usuário" width="12%"
+								filterBy="#{_usuario.dadosParaBuscaTextual}"
+								filterMatchMode="contains"
+								filterStyle="display:none; visibility:hidden;">
+								<div class="center">
+									<h:outputText value="#{_usuario.pessoa.nome}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="E-mail" width="17%">
+								<div class="center">
+									<h:outputText value="#{_usuario.email}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Status" width="8%">
+								<div class="center">
+									<h:outputText value="#{_usuario.situacaoRegistro.descricao}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Ações" width="13%">
+								<div class="center">
+									<p:commandLink process="@this"
+										action="#{usuarioAction.selecionar(_usuario)}"
+										title="Visualizar" update="@form:modalDetalheUsuario"
+										oncomplete="PF('modalDetalheUsuarioWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_USUARIOS')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-search-plus"
+											style="font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{usuarioAction.alterar(_usuario)}" title="Alterar"
+										update="@form:modalSalvaUsuario"
+										oncomplete="PF('modalSalvaUsuarioWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_USUARIOS')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-edit"
+											style="color: orange; font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{usuarioForm.popularPerfis(_usuario)}"
+										title="Manter Perfis do Usuário"
+										update="@form:modalSalvaPerfisDoUsuario"
+										oncomplete="PF('modalSalvaPerfisDoUsuarioWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_USUARIOS')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-lock"
+											style="color: #007bff; font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+
+									<p:commandLink
+										process="@this @form:painelUsuario @form:msgsGrowl"
+										action="#{usuarioAction.ativarDesativar(_usuario)}"
+										title="#{_usuario.situacaoRegistro.descricao}"
+										update="@form:painelUsuario @form:msgsGrowl"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_USUARIOS')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<h:panelGroup rendered="#{_usuario.situacaoRegistro.situacao}">
+											<i class="fa fa-check-square"
+												style="color: green; font-size: 16px !important; margin-right: 10px;"></i>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{not _usuario.situacaoRegistro.situacao}">
+											<i class="fa fa-minus-square"
+												style="color: red; font-size: 16px !important; margin-right: 10px;"></i>
+										</h:panelGroup>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{usuarioAction.selecionar(_usuario)}" title="Excluir"
+										oncomplete="PF('confirmarExclusaoUsuarioWidgetVar').show();"
+										update="@form:painelUsuario"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_USUARIOS')).situacaoExcluir eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-trash"
+											style="color: red; font-size: 16px !important;"></i>
+									</p:commandLink>
+								</div>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+					<div class="card-footer small text-muted">Lista de Usuários
+						Cadastrados.</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<p:dialog header="Excluir Usuário" id="confirmarExclusaoUsuario"
+		closable="false" widgetVar="confirmarExclusaoUsuarioWidgetVar"
+		modal="true">
+
+		<p:panel header="Confirmar a exclusão do Usuário?"
+			footer="Clicando na opção 'Sim' o Sistema confirmará a exclusão do registro do banco de dados. Caso não queira efetuar a operação, clique em 'Não.'"
+			style="margin-bottom: 20px;">
+
+			<h:outputText
+				value="Sr(a). #{usuarioLogado.usuario.pessoa.nome}, você realmente deseja excluir o registro '#{usuarioForm.usuarioSelecionado.pessoa.nome}' do Sistema?"
+				style="font-size: 14px; font-weight: bold;" />
+
+			<h:panelGrid columns="2" cellpadding="10">
+
+				<h:form>
+
+					<p:commandButton value="Sim" process="@this"
+						update=":formTemplate:painelUsuario :formTemplate:msgsGrowl"
+						action="#{usuarioAction.deletar(true)}"
+						oncomplete="PF('confirmarExclusaoUsuarioWidgetVar').hide();"
+						style="background: #5cb85c; border: 1px solid #4cae4c; color: #ffffff; font-weight: bold; padding: 1px; text-shadow: none; box-shadow: none;"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Não" process="@this"
+						update=":formTemplate:msgsGrowl"
+						oncomplete="PF('confirmarExclusaoUsuarioWidgetVar').hide();"
+						style="background: #d9534f; border: 1px solid #d43f3a; color: #ffffff; font-weight: bold; padding: 1px; text-shadow: none; box-shadow: none;"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+
+				</h:form>
+
+			</h:panelGrid>
+
+		</p:panel>
+
+	</p:dialog>
+
+	<script type="text/javascript">
+		//<![CDATA[
+			
+           	$(document).ready(function () {
+           	});
+           	
+       	//]]>
+   	</script>
+
+</ui:component>

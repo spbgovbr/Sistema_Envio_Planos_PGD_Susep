@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:sec="https://joinfaces.org/security">
+
+	<p:dialog id="modalTarefaValidacao"
+		widgetVar="modalTarefaValidacaoWidgetVar" resizable="false"
+		modal="true" closable="true" responsive="true"
+		header="Tarefas de Validação dos Dados"
+		style="min-width: 50%; max-width: 50%;" height="350px">
+
+		<ui:repeat var="_tarefa" varStatus="status"
+			value="#{tarefaValidacaoEnvioDados.listaTarefaValidacaoMensagem}">
+
+			<p:panel header="Tarefa de Validação n.#{status.index + 1}">
+
+				<p:spacer height="5px" style="display: block;" />
+
+				<h:outputLabel value="Método: #{_tarefa.metodo}"
+					style="font-weight: bold;" />
+
+				<p:spacer height="5px" style="display: block;" />
+
+				<h:outputLabel
+					value="Resultado: #{_tarefa.resultado ? 'Passou' : 'Não Passou'}"
+					style="font-weight: bold; color: #{_tarefa.resultado ? 'green;' : 'red;'}" />
+
+				<p:spacer height="5px" style="display: block;" />
+
+				<h:outputLabel value="Mensagem: #{_tarefa.mensagem}"
+					style="font-weight: bold;" />
+
+			</p:panel>
+
+			<p:spacer height="10px" style="display: block;" />
+
+		</ui:repeat>
+
+		<p:spacer height="30px" style="display: block;" />
+
+		<h:panelGrid columns="3" style="width: 43%;">
+
+			<p:commandButton value="Cancelar" process="@this"
+				icon="ui-icon-cancel" update="@form:msgsGrowl"
+				style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none; background-color: #FA8072;"
+				styleClass="btn btn-danger btn-xs" oncomplete="ajustesCSS();"
+				action="#{painelApiPgCadeAction.confirmarEnvioDados(false)}"
+				onclick="PF('modalTarefaValidacaoWidgetVar').hide();" />
+
+			<p:commandButton value="Enviar" process="@this"
+				icon="ui-icon-transferthick-e-w"
+				rendered="#{tarefaValidacaoEnvioDados.podeExibirBotaoEnvioDados}"
+				update="@form:msgsGrowl @form:modalErrorResponse @form:painelApiPgCade"
+				style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none; background-color: #5882FA;"
+				styleClass="btn btn-primary btn-xs" oncomplete="ajustesCSS();"
+				action="#{painelApiPgCadeAction.confirmarEnvioDados(true, 'CRIAR_OU_SUBSTITUIR')}"
+				onclick="PF('modalTarefaValidacaoWidgetVar').hide(); irPara('painelApiPgCade');" />
+
+			<p:commandButton value="Atualizar" process="@this"
+				icon="ui-icon-transferthick-e-w"
+				rendered="#{tarefaValidacaoEnvioDados.podeExibirBotaoEnvioDados}"
+				update="@form:msgsGrowl @form:modalErrorResponse @form:painelApiPgCade"
+				style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none; background-color: #00FF80;"
+				styleClass="btn btn-primary btn-xs" oncomplete="ajustesCSS();"
+				action="#{painelApiPgCadeAction.confirmarEnvioDados(true, 'ATUALIZAR')}"
+				onclick="PF('modalTarefaValidacaoWidgetVar').hide(); irPara('painelApiPgCade');" />
+
+		</h:panelGrid>
+
+	</p:dialog>
+
+</ui:component>

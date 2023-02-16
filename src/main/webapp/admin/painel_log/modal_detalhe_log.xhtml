@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalDetalheLog" widgetVar="modalDetalheLogWidgetVar"
+		header="Visualizar Log" modal="true" closable="true" resizable="false"
+		style="position: fixed; top: 30%;" height="500" width="1200">
+
+		<p:panel header="Dados do Log">
+
+			<h:panelGrid columns="8">
+
+				<h:outputText value="Id: " styleClass="font-negrito" />
+				<h:outputText value="#{logForm.logSelecionado.id}" />
+
+				<h:outputText value="Nível: " styleClass="font-negrito" />
+				<h:outputText value="#{logForm.logSelecionado.nivelAcao.detalhe}" />
+
+				<h:outputText value="Usuário: " styleClass="font-negrito" />
+				<h:outputText value="#{logForm.logSelecionado.usuario.pessoa.nome}" />
+
+				<h:outputText value="Data: " styleClass="font-negrito" />
+				<h:outputText value="#{logForm.logSelecionado.dataAcao}">
+					<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
+						timeZone="America/Sao_Paulo" type="both" />
+				</h:outputText>
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="1">
+
+				<h:outputText style="word-break: break-all;"
+					value="#{logForm.logSelecionado.descricaoAcao}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<div style="padding-top: 10px; padding-bottom: 20px;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				update="@form:painelLog"
+				onclick="PF('modalDetalheLogWidgetVar').hide();"
+				style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+				styleClass="btn btn-default" />
+
+		</div>
+
+	</p:dialog>
+
+</ui:component>

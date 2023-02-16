@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<f:event type="preRenderComponent" listener="#{perfilAction.init}" />
+	</f:metadata>
+
+	<div class="container">
+
+		<h2
+			class="page-section-heading text-center text-uppercase text-secondary mb-0">Perfis</h2>
+
+		<div class="divider-custom">
+			<div class="divider-custom-line"></div>
+			<div class="divider-custom-icon">
+				<i class="fas fa-lock"></i>
+			</div>
+			<div class="divider-custom-line"></div>
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-table" style="margin-right: 2px;"></i> Registros
+					</div>
+
+					<div class="card-body">
+
+						<p:dataTable id="dataTableListaPerfil"
+							widgetVar="dataTableListaPerfilWidgetVar"
+							value="#{perfilForm.listaPerfil}"
+							filteredValue="#{perfilForm.listaFiltradaPerfil}" var="_perfil"
+							paginator="true" rows="10" filterDelay="0"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,20,30,40,50,100"
+							paginatorPosition="bottom"
+							emptyMessage="Nenhum registro encontrado.">
+
+							<p:ajax event="filter" global="false"
+								process="@this @form:painelPerfil" />
+
+							<p:ajax event="page" global="false"
+								process="@this @form:painelPerfil" />
+
+							<f:facet name="header">
+								<p:outputPanel>
+									<i class="fa fa-search"
+										style="font-size: 16px !important; margin-right: 3px;"></i>
+									<p:inputText id="globalFilter"
+										onkeyup="PF('dataTableListaPerfilWidgetVar').filter()"
+										style="width:70%;" placeholder="Digite para pesquisar...">
+										<p:ajax event="keyup" global="false"
+											process="@this @form:painelPerfil" />
+										<p:ajax event="keydown" global="false"
+											process="@this @form:painelPerfil" />
+										<p:ajax event="keypress" global="false"
+											process="@this @form:painelPerfil" />
+									</p:inputText>
+									<p:commandButton value="Novo" icon="ui-icon-plus"
+										process="@this" action="#{perfilForm.novoPerfil()}"
+										style="color: #ffffff; background-color: #4e73df; text-shadow: none; margin: 0; box-shadow: none; background-image: none; margin-left: 10px; height: 30px; position: relative; top: -1px;"
+										update="@form:painelPerfil @form:modalSalvaPerfil"
+										oncomplete="PF('modalSalvaPerfilWidgetVar').show();"
+										styleClass="btn btn-primary"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_PERFIS')).situacaoCadastrar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column headerText="Perfil" width="35%"
+								filterBy="#{_perfil.dadosParaBuscaTextual}"
+								filterMatchMode="contains"
+								filterStyle="display:none; visibility:hidden;">
+								<div class="center">
+									<h:outputText value="#{_perfil.descricao}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Detalhe" width="40%">
+								<div class="center">
+									<h:outputText value="#{_perfil.detalhe}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Status" width="10%">
+								<div class="center">
+									<h:outputText value="#{_perfil.situacaoRegistro.descricao}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Ações" width="15%">
+								<div class="center">
+									<p:commandLink process="@this"
+										action="#{perfilAction.selecionar(_perfil)}"
+										title="Visualizar" update="@form:modalDetalhePerfil"
+										oncomplete="PF('modalDetalhePerfilWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_PERFIS')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-search-plus"
+											style="font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{perfilAction.alterar(_perfil)}" title="Alterar"
+										update="@form:modalSalvaPerfil"
+										oncomplete="PF('modalSalvaPerfilWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_PERFIS')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-edit"
+											style="color: orange; font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{perfilAction.alterar(_perfil)}"
+										actionListener="#{perfilForm.removerFuncao}"
+										title="Manter Funções do Perfil"
+										update="@form:modalSalvaFuncoesDoPerfil"
+										oncomplete="PF('modalSalvaFuncoesDoPerfilWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_PERFIS')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-cogs"
+											style="color: #007bff; font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+
+									<p:commandLink
+										process="@this @form:painelPerfil @form:msgsGrowl"
+										action="#{perfilAction.ativarDesativar(_perfil)}"
+										title="#{_perfil.situacaoRegistro.descricao}"
+										update="@form:painelPerfil @form:msgsGrowl" oncomplete="rc();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_PERFIS')).situacaoAlterar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<h:panelGroup rendered="#{_perfil.situacaoRegistro.situacao}">
+											<i class="fa fa-check-square"
+												style="color: green; font-size: 16px !important; margin-right: 10px;"></i>
+										</h:panelGroup>
+										<h:panelGroup
+											rendered="#{not _perfil.situacaoRegistro.situacao}">
+											<i class="fa fa-minus-square"
+												style="color: red; font-size: 16px !important; margin-right: 10px;"></i>
+										</h:panelGroup>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{perfilAction.selecionar(_perfil)}" title="Excluir"
+										oncomplete="PF('confirmarExclusaoPerfilWidgetVar').show();"
+										update="@form:painelPerfil"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('MANTER_PERFIS')).situacaoExcluir eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-trash"
+											style="color: red; font-size: 16px !important;"></i>
+									</p:commandLink>
+								</div>
+							</p:column>
+						</p:dataTable>
+
+					</div>
+
+					<div class="card-footer small text-muted">Lista de Perfis
+						Cadastrados.</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<p:dialog header="Excluir Perfil" id="confirmarExclusaoPerfil"
+		closable="false" widgetVar="confirmarExclusaoPerfilWidgetVar"
+		modal="true">
+
+		<p:panel header="Confirmar a exclusão do Perfil?"
+			footer="Clicando na opção 'Sim' o Sistema confirmará a exclusão do registro do banco de dados. Caso não queira efetuar a operação, clique em 'Não.'"
+			style="margin-bottom: 20px;">
+
+			<h:outputText
+				value="Sr(a). #{usuarioLogado.usuario.pessoa.nome}, você realmente deseja excluir o registro '#{perfilForm.perfilSelecionado.descricao}' do Sistema?"
+				style="font-size: 14px; font-weight: bold;" />
+
+			<h:panelGrid columns="2" cellpadding="10">
+
+				<h:form>
+
+					<p:commandButton value="Sim" process="@this"
+						update=":formTemplate:painelPerfil :formTemplate:msgsGrowl"
+						action="#{perfilAction.deletar(true)}"
+						oncomplete="PF('confirmarExclusaoPerfilWidgetVar').hide();"
+						style="background: #5cb85c; border: 1px solid #4cae4c; color: #ffffff; font-weight: bold; padding: 1px; text-shadow: none; box-shadow: none;"
+						styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton value="Não" process="@this"
+						update=":formTemplate:msgsGrowl"
+						oncomplete="PF('confirmarExclusaoPerfilWidgetVar').hide();"
+						style="background: #d9534f; border: 1px solid #d43f3a; color: #ffffff; font-weight: bold; padding: 1px; text-shadow: none; box-shadow: none;"
+						styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+
+				</h:form>
+
+			</h:panelGrid>
+
+		</p:panel>
+
+	</p:dialog>
+	
+	<p:remoteCommand name="rc" process="@this @form:painelPerfil"
+		update="@form:painelPerfil @form:painelPerfil:dataTableListaPerfil"
+		onclick="PF('dataTableListaPerfilWidgetVar').clearFilters();">
+		<p:resetInput target="@form:painelPerfil:dataTableListaPerfil" />
+	</p:remoteCommand>
+
+	<script type="text/javascript">
+		//<![CDATA[
+			
+           	$(document).ready(function () {
+           	});
+           	
+       	//]]>
+   	</script>
+
+</ui:component>

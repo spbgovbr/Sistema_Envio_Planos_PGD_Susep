@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalSalvaUsuario" modal="true" closable="true"
+		header="#{usuarioForm.usuarioSalvo.id eq null ? 'Cadastrar' : 'Alterar'} Usuário"
+		widgetVar="modalSalvaUsuarioWidgetVar">
+
+		<h:panelGroup id="mantemUsuario">
+
+			<p:panel>
+
+				<h:panelGroup>
+
+					<h:outputText value="* " style="color: red; font-weight: bold;" />
+
+					<h:outputText value="Por favor, preencha os campos obrigatórios!"
+						styleClass="font-negrito" />
+
+				</h:panelGroup>
+
+				<p:spacer height="10px" style="display: block;" />
+
+				<h:panelGrid columns="2" style="width: 100%;"
+					columnClasses="coluna1_20, coluna2_80">
+
+					<h:panelGroup>
+						<h:outputText value="* " style="color: red; font-weight: bold;" />
+						<h:outputText value="Nome: " styleClass="font-negrito" />
+					</h:panelGroup>
+
+					<p:inputText styleClass="form-control" maxlength="250"
+						value="#{usuarioForm.usuarioSalvo.pessoa.nome}" />
+
+					<h:panelGroup>
+						<h:outputText value="* " style="color: red; font-weight: bold;" />
+						<h:outputText value="CPF: " styleClass="font-negrito" />
+					</h:panelGroup>
+
+					<p:inputMask mask="999.999.999-99" styleClass="form-control"
+						value="#{usuarioForm.usuarioSalvo.pessoa.numeroCPF}" />
+
+					<h:panelGroup>
+						<h:outputText value="* " style="color: red; font-weight: bold;" />
+						<h:outputText value="E-mail: " styleClass="font-negrito" />
+					</h:panelGroup>
+
+					<p:inputText styleClass="form-control" maxlength="100"
+						value="#{usuarioForm.usuarioSalvo.email}" />
+
+					<h:outputText value="Senha: " styleClass="font-negrito" />
+
+					<p:password styleClass="form-control" maxlength="10"
+						value="#{usuarioForm.usuarioSalvo.senha}" />
+
+					<h:outputText value="Situação: " styleClass="font-negrito" />
+
+					<p:selectOneRadio
+						value="#{usuarioForm.usuarioSalvo.situacaoRegistro}">
+						<f:selectItems var="st" value="#{usuarioForm.situacoesRegistro}"
+							itemValue="#{st}" itemLabel="#{st.descricao}" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+
+			</p:panel>
+
+			<div style="padding-top: 10px; padding-bottom: 20px;">
+
+				<p:commandButton value="Fechar" icon="ui-icon-close"
+					update="@form:painelUsuario"
+					onclick="PF('modalSalvaUsuarioWidgetVar').hide();"
+					style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+					styleClass="btn btn-default" />
+
+				<p:spacer width="15" />
+
+				<p:commandButton value="Salvar" icon="ui-icon-disk"
+					action="#{usuarioAction.salvar()}"
+					update="mantemUsuario @form:painelUsuario @form:msgsGrowl"
+					process="@this mantemUsuario"
+					style="padding: 3px; color: #ffffff; background-color: #007bff; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+					styleClass="btn btn-primary btn-xs" />
+
+			</div>
+
+		</h:panelGroup>
+
+	</p:dialog>
+
+</ui:component>

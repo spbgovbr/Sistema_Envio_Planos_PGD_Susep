@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalSalvaPerfil"
+		header="#{perfilForm.perfilSalvo.id eq null ? 'Cadastrar' : 'Alterar'} Perfil"
+		modal="true" closable="true" widgetVar="modalSalvaPerfilWidgetVar">
+
+		<h:panelGroup id="mantemPerfil">
+
+			<p:panel>
+
+				<h:panelGroup>
+
+					<h:outputText value="* " style="color: red; font-weight: bold;" />
+
+					<h:outputText value="Por favor, preencha os campos obrigatórios!"
+						styleClass="font-negrito" />
+
+				</h:panelGroup>
+
+				<p:spacer height="10px" style="display: block;" />
+
+				<h:panelGrid columns="2" style="width: 100%;"
+					columnClasses="coluna1_20, coluna2_80">
+
+					<h:panelGroup>
+						<h:outputText value="* " style="color: red; font-weight: bold;" />
+						<h:outputText value="Descrição: " styleClass="font-negrito" />
+					</h:panelGroup>
+
+					<p:inputText maxlength="100" styleClass="form-control"
+						value="#{perfilForm.perfilSalvo.descricao}" />
+
+					<h:outputText value="Detalhe: " styleClass="font-negrito" />
+
+					<h:panelGroup>
+
+						<p:inputTextarea widgetVar="cadAltDetalhePerfilWidgetVar"
+							value="#{perfilForm.perfilSalvo.detalhe}" rows="10" cols="64"
+							counter="display" maxlength="5000"
+							counterTemplate="{0} caracteres restantes." autoResize="false" />
+						<br />
+						<h:outputText id="display" />
+
+					</h:panelGroup>
+
+					<h:outputText value="Situação: " styleClass="font-negrito" />
+
+					<p:selectOneRadio
+						value="#{perfilForm.perfilSalvo.situacaoRegistro}">
+						<f:selectItems var="st" value="#{perfilForm.situacoesRegistro}"
+							itemValue="#{st}" itemLabel="#{st.descricao}" />
+					</p:selectOneRadio>
+				</h:panelGrid>
+
+			</p:panel>
+
+			<div style="padding-top: 10px; padding-bottom: 20px;">
+
+				<p:commandButton value="Fechar" icon="ui-icon-close"
+					update="@form:painelPerfil"
+					onclick="PF('modalSalvaPerfilWidgetVar').hide();"
+					style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+					styleClass="btn btn-default" />
+
+				<p:spacer width="15" />
+
+				<p:commandButton value="Salvar" icon="ui-icon-disk"
+					action="#{perfilAction.salvar()}"
+					update="mantemPerfil @form:painelPerfil @form:msgsGrowl"
+					process="@this mantemPerfil"
+					style="padding: 3px; color: #ffffff; background-color: #007bff; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+					styleClass="btn btn-primary btn-xs" />
+
+			</div>
+
+		</h:panelGroup>
+
+	</p:dialog>
+
+</ui:component>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+
+	<title><ui:insert name="title" />API PGD SUSEP - <ui:insert
+			name="title" /></title>
+
+	<ui:insert name="head" />
+
+	<style type="text/css">
+</style>
+
+	<script type="text/javascript">
+		//<![CDATA[
+			$ = jQuery;
+			$(document).ready(function () {
+			});
+		//]]>
+	</script>
+
+	<h:outputStylesheet name="css/estilo.css" />
+	<h:outputStylesheet name="css/primefaces-override-main.css" />
+	<h:outputStylesheet name="css/freelancer.min.css" />
+	<h:outputStylesheet name="vendor/fontawesome-free/css/all.min.css" />
+	<h:outputStylesheet name="css/datatables.min.css" />
+	<h:outputStylesheet
+		value="https://fonts.googleapis.com/css?family=Montserrat:400,700"
+		library="stylesheet" />
+	<h:outputStylesheet
+		value="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic"
+		library="stylesheet" />
+
+	<h:outputScript name="js/scripts.js" />
+
+	<h:outputScript library="primefaces" name="jquery/jquery.js"
+		target="head" />
+	<h:outputScript library="primefaces" name="jquery/jquery-plugins.js"
+		target="head" />
+
+	<h:outputScript name="js/datatables.min.js" />
+
+</h:head>
+
+<h:body id="page-top">
+
+	<h:form prependId="false" id="formTemplate" acceptcharset="ISO-8859-1">
+
+		<p:growl id="msgsGrowl" widgetVar="msgsGrowlWidgetVar"
+			showDetail="true" />
+
+		<nav
+			class="navbar navbar-expand-lg bg-secondary text-normal fixed-top"
+			id="mainNav">
+			<div class="container">
+				<h:graphicImage style="width: 15%;" name="/gfx/logo-pg.png" />
+				<a class="navbar-brand js-scroll-trigger"
+					href="#{facesContext.externalContext.requestContextPath}/admin/home.jsf">Menu</a>
+				<p:commandLink style="font-size: 22px !important; color: #ffffff;"
+					styleClass="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger"
+					oncomplete="PF('confirmarLogoutWidgetVar').show();" rendered="true">
+					<i class="fas fa-sign-out-alt" style="margin-right: 5px;"></i>Sair
+					</p:commandLink>
+			</div>
+		</nav>
+
+		<section class="page-section portfolio">
+
+			<p:outputPanel id="contentPanelMain">
+
+				<ui:insert name="content" />
+
+			</p:outputPanel>
+
+		</section>
+
+		<footer class="footer text-center">
+
+			<div class="container">
+
+				<div class="row">
+
+					<div class="col-lg-6 mb-5 mb-lg-0">
+						<h4 class="text-normal mb-4">Endereço</h4>
+						<p class="lead mb-0" style="font-size: 1rem;">
+							Setor de Edifícios de Utilidade Pública Norte – SEPN <br />Entrequadra
+							515, Conjunto D, Lote 4, Edifício Carlos Taurisano <br />Cep:
+							70770-504 - Brasília/DF
+						</p>
+					</div>
+
+					<div class="col-lg-6 mb-5 mb-lg-0">
+						<h4 class="text-normal mb-4">Web</h4>
+						<a class="btn btn-outline-light btn-social mx-1"
+							href="mailto:cgti@cade.gov.br"> <i
+							class="fas fa-fw fa-envelope"></i>
+						</a> <a class="btn btn-outline-light btn-social mx-1"
+							href="https://www.gov.br/cade/pt-br" target="_blank"> <i
+							class="fab fa-fw fa-dribbble"></i>
+						</a>
+					</div>
+
+				</div>
+
+			</div>
+
+		</footer>
+
+		<section class="copyright py-4 text-center text-white">
+			<div class="container">
+				<small>Desenvolvido pela Coordenação-Geral de Tecnologia da
+					Informação (CGTI) - 2021</small>
+			</div>
+		</section>
+
+	</h:form>
+
+	<p:ajaxStatus id="ajaxStatus" onstart="PF('statusDialog').show();"
+		onsuccess="PF('statusDialog').hide();" />
+
+	<p:dialog widgetVar="statusDialog" modal="true" draggable="false"
+		closable="false" resizable="false" showHeader="false">
+		<p:graphicImage name="/gfx/ajax-loader.gif" />
+	</p:dialog>
+
+	<p:dialog header="Confirmar logout!" id="confirmarLogout"
+		responsive="true" closable="true" widgetVar="confirmarLogoutWidgetVar"
+		modal="true">
+
+		<p:panel
+			footer="Observação! Lembre-se de SALVAR todos os dados antes de clicar em 'Sim'."
+			style="margin-bottom: 20px;">
+
+			<h:outputText
+				value="Sr(a). #{usuarioLogado}, você realmente deseja sair do Sistema?"
+				style="font-size: 14px; font-weight: bold;" />
+
+			<h:panelGrid columns="2" cellpadding="10">
+
+				<h:form>
+
+					<a href="/logout"
+						style="cursor: pointer; padding: 6px; border-radius: 4px; text-decoration: none; background: #5cb85c; border: 1px solid #4cae4c; color: #ffffff; font-weight: bold; text-shadow: none; box-shadow: none;"
+						class="ui-confirmdialog-yes"><i class="fas fa-check"
+						style="margin-right: 5px;"></i>Sim</a>
+
+					<p:spacer width="10px" />
+
+					<a onclick="PF('confirmarLogoutWidgetVar').hide();"
+						style="cursor: pointer; padding: 6px; border-radius: 4px; text-decoration: none; background: #d9534f; border: 1px solid #d43f3a; color: #ffffff; font-weight: bold; text-shadow: none; box-shadow: none;"
+						class="ui-confirmdialog-yes"><i class="fas fa-times"
+						style="margin-right: 7px;"></i>Não</a>
+
+				</h:form>
+
+			</h:panelGrid>
+
+		</p:panel>
+
+	</p:dialog>
+
+</h:body>
+
+</html>

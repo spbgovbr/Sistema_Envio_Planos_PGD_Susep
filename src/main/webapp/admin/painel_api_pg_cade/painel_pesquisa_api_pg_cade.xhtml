@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<f:event type="preRenderComponent"
+			listener="#{painelApiPgCadeAction.init}" />
+	</f:metadata>
+
+	<div class="container">
+
+		<h2
+			class="page-section-heading text-center text-uppercase text-secondary mb-0">Enviar
+			Planos</h2>
+
+		<div class="divider-custom">
+			<div class="divider-custom-line"></div>
+			<div class="divider-custom-icon">
+				<i class="fas fa-file-import"></i>
+			</div>
+			<div class="divider-custom-line"></div>
+		</div>
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-exchange-alt" style="margin-right: 2px;"></i>
+						Informações sobre o último Envio Planos de Trabalhos
+					</div>
+
+					<div class="card-body">
+
+						<h:panelGroup
+							rendered="#{false and painelApiPgCadeForm.listaUltimosRegistrosEnviados ne null and painelApiPgCadeForm.listaUltimosRegistrosEnviados.size() gt 0}">
+
+							<ui:repeat var="_ultimoEnvio"
+								value="#{painelApiPgCadeForm.listaUltimosRegistrosEnviados}">
+
+								<h:panelGrid columns="1" style="border: 2px solid;">
+
+									<h:outputLabel
+										value="#{_ultimoEnvio.getRegistroLogNivelUsuario()}"
+										style="font-weight: bold;" />
+
+								</h:panelGrid>
+
+								<p:spacer height="15px" style="display: block;" />
+
+							</ui:repeat>
+
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{painelApiPgCadeForm.listaUltimosRegistrosEnvioPlanos ne null and painelApiPgCadeForm.listaUltimosRegistrosEnvioPlanos.size() gt 0}">
+
+							<ul class="circle" style="margin: 0; padding: 0 0 0 15px;">
+								<ui:repeat var="_ultimoEnvio"
+									value="#{painelApiPgCadeForm.listaUltimosRegistrosEnvioPlanos}">
+									<li><h:outputLabel value="#{_ultimoEnvio.descricaoAcao}"
+											style="font-weight: bold;" /></li>
+								</ui:repeat>
+							</ul>
+
+						</h:panelGroup>
+
+						<h:panelGroup
+							rendered="#{painelApiPgCadeForm.listaUltimosRegistrosEnvioPlanos eq null or painelApiPgCadeForm.listaUltimosRegistrosEnvioPlanos.size() == 0}">
+
+							<div class="alert alert-warning" style="margin-bottom: 0px;">
+								<strong>Nenhum registro encontrado.</strong>
+							</div>
+
+						</h:panelGroup>
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<p:spacer height="30px" style="display: block;" />
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-filter" style="margin-right: 2px;"></i> Filtros de
+						Pesquisa
+					</div>
+
+					<div class="card-body">
+
+						<h:panelGroup id="filtrosPainelApiPgCade">
+
+							<p:panel header="Participante:">
+
+								<h:panelGrid columns="4">
+
+									<h:outputText value="SIAPE: " styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:inputText styleClass="form-control" maxlength="7"
+										value="#{painelApiPgCadeForm.pactoPesquisa.matriculaSiape}"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<h:outputText value="Nome: " styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:inputText styleClass="form-control" maxlength="150"
+										value="#{painelApiPgCadeForm.pactoPesquisa.nomeParticipante}"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<h:outputText value="CPF: " styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:inputMask styleClass="form-control" mask="99999999999"
+										value="#{painelApiPgCadeForm.pactoPesquisa.cpf}"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<h:outputText value="Unidade: " styleClass="font-negrito" />
+
+									<p:autoComplete size="50"
+										placeholder="Digite para pesquisar..."
+										value="#{painelApiPgCadeForm.unidadeSelecionada}"
+										completeMethod="#{painelApiPgCadeForm.autoCompleteUnidade}"
+										var="_unidade" itemLabel="#{_unidade.nome}"
+										itemValue="#{_unidade}" dropdown="true" maxResults="10"
+										style="display: inline-flex !important;"
+										converterMessage="Conversão inválida."
+										converter="#{unidadeConverter}" forceSelection="false">
+										<p:ajax event="query" global="false" />
+										<p:ajax event="keypress" global="false" />
+										<p:ajax event="itemSelect" global="false"
+											listener="#{painelApiPgCadeForm.selecionarUnidade}" />
+									</p:autoComplete>
+
+								</h:panelGrid>
+
+							</p:panel>
+
+							<p:spacer height="10" style="display: block;" />
+
+							<p:panel header="Período:">
+
+								<h:panelGrid columns="4">
+
+									<h:outputText value="Data Inicial: " styleClass="font-negrito" />
+
+									<p:calendar id="dtInicialPeriodoInicio"
+										style="display: -webkit-inline-box;" showOn="button"
+										value="#{painelApiPgCadeForm.pactoPesquisa.dataInicialPeriodoInicio}"
+										pattern="dd/MM/yyyy" navigator="true" mask="true"
+										converter="#{dataConverter}" converterMessage="Data inválida!"
+										timeZone="America/Sao_Paulo" locale="pt_BR" />
+
+									<h:outputText value="Data Final: " styleClass="font-negrito" />
+
+									<p:calendar id="dtFinalPeriodoInicio"
+										style="display: -webkit-inline-box;" showOn="button"
+										value="#{painelApiPgCadeForm.pactoPesquisa.dataFinalPeriodoInicio}"
+										pattern="dd/MM/yyyy" navigator="true" mask="true"
+										converter="#{dataConverter}" converterMessage="Data inválida!"
+										timeZone="America/Sao_Paulo" locale="pt_BR" />
+
+									<h:outputText value="Data Avaliação: "
+										styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:calendar id="dtAvaliacao"
+										style="display: -webkit-inline-box;" showOn="button"
+										value="#{painelApiPgCadeForm.pactoPesquisa.dataAvaliacao}"
+										pattern="dd/MM/yyyy" navigator="true" mask="true"
+										converter="#{dataConverter}" converterMessage="Data inválida!"
+										timeZone="America/Sao_Paulo" locale="pt_BR"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<h:outputText value="Data Interrupção: "
+										styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:calendar id="dtInterrupcao"
+										style="display: -webkit-inline-box;" showOn="button"
+										value="#{painelApiPgCadeForm.pactoPesquisa.dataInterrupcao}"
+										pattern="dd/MM/yyyy" navigator="true" mask="true"
+										converter="#{dataConverter}" converterMessage="Data inválida!"
+										timeZone="America/Sao_Paulo" locale="pt_BR"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+								</h:panelGrid>
+
+							</p:panel>
+
+							<p:spacer height="10" style="display: block;" />
+
+							<p:panel header="Plano de Trabalho:">
+
+								<h:panelGrid columns="6">
+
+									<h:outputText value="Entregue no Prazo?"
+										styleClass="font-negrito" />
+
+									<p:selectOneMenu id="selectEntreguePazo"
+										style="min-width: 100px !important;"
+										value="#{painelApiPgCadeForm.pactoPesquisa.entregueNoPrazo}">
+										<f:selectItem itemValue="" itemLabel="Todos" />
+										<f:selectItem itemValue="true" itemLabel="Sim" />
+										<f:selectItem itemValue="false" itemLabel="Não" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Avaliação: " styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:selectOneMenu id="selectNotaAvaliacao"
+										style="min-width: 100px !important;"
+										value="#{painelApiPgCadeForm.pactoPesquisa.notaAvaliacao}"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}">
+										<f:selectItem itemLabel="Todos" />
+										<f:selectItems var="na"
+											value="#{painelApiPgCadeForm.notasAvaliacao}"
+											itemValue="#{na}" itemLabel="#{na.nota}" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Situação Plano: "
+										styleClass="font-negrito" />
+
+									<p:selectOneMenu id="selectSituacaoPlano"
+										style="min-width: 200px !important;"
+										converter="#{situacaoPactoConverter}"
+										value="#{painelApiPgCadeForm.pactoPesquisa.situacaoPacto}">
+										<f:selectItem itemLabel="Todos" />
+										<f:selectItems var="sp"
+											value="#{painelApiPgCadeForm.situacoesPacto}"
+											itemValue="#{sp}" itemLabel="#{sp.descricao}">
+										</f:selectItems>
+									</p:selectOneMenu>
+
+									<h:outputText value="Qtd. Entregas: " styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:selectOneMenu id="selectQtdEntregas"
+										style="min-width: 100px !important;"
+										value="#{painelApiPgCadeForm.pactoPesquisa.quantidadeEntregas}"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}">
+										<f:selectItem itemLabel="Todos" />
+										<f:selectItems var="qe"
+											value="#{painelApiPgCadeForm.quantidadeEntregas}"
+											itemValue="#{qe}" itemLabel="#{qe.texto}" />
+									</p:selectOneMenu>
+
+									<h:outputText value="Qtd. Entregas Efetivas: "
+										styleClass="font-negrito"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}" />
+
+									<p:selectOneMenu id="selectQtdEntregasEfetivas"
+										style="min-width: 100px !important;"
+										value="#{painelApiPgCadeForm.pactoPesquisa.quantidadeEntregasEfetivas}"
+										rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}">
+										<f:selectItem itemLabel="Todos" />
+										<f:selectItems var="qe"
+											value="#{painelApiPgCadeForm.quantidadeEntregas}"
+											itemValue="#{qe}" itemLabel="#{qe.texto}" />
+									</p:selectOneMenu>
+
+								</h:panelGrid>
+
+							</p:panel>
+
+							<p:spacer height="10" style="display: block;" />
+
+							<p:panel header="Atividade:"
+								rendered="#{usuarioLogado.usuario.temPerfil('ROLE_ADMIN')}">
+
+								<h:panelGrid columns="4">
+
+									<h:outputText value="Tipo Atividade: "
+										styleClass="font-negrito" />
+
+									<p:autoComplete size="35"
+										placeholder="Digite para pesquisar..."
+										value="#{painelApiPgCadeForm.tipoAtividadeSelecionado}"
+										completeMethod="#{painelApiPgCadeForm.autoCompleteTipoAtividade}"
+										var="_tipoAtividade"
+										itemLabel="#{ajudanteProjeto.resumirString(_tipoAtividade.faixaComplexidade, 50, true)}"
+										itemValue="#{_tipoAtividade}" dropdown="true" maxResults="10"
+										style="display: inline-flex !important;"
+										converterMessage="Conversão inválida."
+										converter="#{tipoAtividadeConverter}" forceSelection="false">
+										<p:ajax event="query" global="false" />
+										<p:ajax event="keypress" global="false" />
+										<p:ajax event="itemSelect" global="false"
+											listener="#{painelApiPgCadeForm.selecionarTipoAtividade}" />
+									</p:autoComplete>
+
+									<h:outputText value="Atividade: " styleClass="font-negrito" />
+
+									<p:autoComplete size="35"
+										placeholder="Digite para pesquisar..."
+										value="#{painelApiPgCadeForm.atividadeSelecionada}"
+										completeMethod="#{painelApiPgCadeForm.autoCompleteAtividade}"
+										var="_atividade"
+										itemLabel="#{ajudanteProjeto.resumirString(_atividade.nome, 50, true)}"
+										itemValue="#{_atividade}" dropdown="true" maxResults="10"
+										style="display: inline-flex !important;"
+										converterMessage="Conversão inválida."
+										converter="#{atividadeConverter}" forceSelection="false">
+										<p:ajax event="query" global="false" />
+										<p:ajax event="keypress" global="false" />
+										<p:ajax event="itemSelect" global="false"
+											listener="#{painelApiPgCadeForm.selecionarAtividade}" />
+									</p:autoComplete>
+									
+									<h:inputHidden value="h1" />
+									<h:inputHidden value="h2" />
+
+								</h:panelGrid>
+
+							</p:panel>
+
+							<p:spacer height="30px" style="display: block;" />
+
+							<p:commandButton ajax="false" value="Limpar"
+								icon="ui-icon-cancel" action="#{painelApiPgCadeAction.init()}"
+								style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+								styleClass="btn btn-danger btn-xs"
+								rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_API_PG_CADE')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+
+							<p:spacer width="30px" />
+
+							<p:commandButton value="Pesquisar" icon="ui-icon-search"
+								process="@this @form:painelApiPgCade:filtrosPainelApiPgCade"
+								update="@form:painelApiPgCade"
+								action="#{painelApiPgCadeAction.pesquisarPorFiltro()}"
+								style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+								styleClass="btn btn-info btn-xs" oncomplete="ajustesCSS();"
+								rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_API_PG_CADE')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+
+							<p:spacer width="30px" />
+
+							<p:commandButton value="Processar e Enviar"
+								icon="ui-icon-transferthick-e-w"
+								process="@this @form:painelApiPgCade"
+								update="@form:msgsGrowl @form:modalTarefaValidacao"
+								action="#{painelApiPgCadeAction.validarEnvioDados()}"
+								style="padding: 3px; text-shadow: none; margin: 0; box-shadow: none; background-image: none;"
+								styleClass="btn btn-primary btn-xs"
+								oncomplete="ajustesCSS(); PF('modalTarefaValidacaoWidgetVar').show();"
+								rendered="#{painelApiPgCadeForm.qtdPactosSelecionados gt 0 and usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_API_PG_CADE')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}" />
+
+						</h:panelGroup>
+
+					</div>
+
+					<div class="card-footer small text-muted">Pesquisar Planos
+						Cadastrados.</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<p:spacer height="30px" style="display: block;" />
+
+		<div class="row">
+
+			<div class="col-lg-12 mx-auto">
+
+				<div class="card mb-3">
+
+					<div class="card-header">
+						<i class="fa fa-table" style="margin-right: 2px;"></i> Planos de
+						Trabalho Cadastrados
+					</div>
+
+					<div class="card-body">
+
+						<p:dataTable id="dataTableListaPacto" filterDelay="0"
+							widgetVar="dataTableListaPactoWidgetVar"
+							value="#{painelApiPgCadeForm.pactoDataModel}"
+							selection="#{painelApiPgCadeForm.listaPactoSelected}"
+							reflow="true" var="_pacto" paginator="true" rows="10"
+							sortBy="#{_pacto.idPacto}" rowKey="#{_pacto.idPacto.toString()}"
+							paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+							currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+							rowsPerPageTemplate="10,20,30,40,50,100"
+							paginatorPosition="bottom" rowSelectMode="checkbox"
+							emptyMessage="Nenhum registro encontrado.">
+
+							<p:ajax event="toggleSelect" global="true"
+								listener="#{painelApiPgCadeForm.selectAllOrUnselectAllPactoDataModal}"
+								process="@this @form:painelApiPgCade"
+								update="@form:painelApiPgCade" />
+
+							<p:ajax event="rowSelectCheckbox" global="false"
+								listener="#{painelApiPgCadeForm.selectPactoDataModal}"
+								process="@this @form:painelApiPgCade"
+								update="@form:painelApiPgCade:filtrosPainelApiPgCade" />
+
+							<p:ajax event="rowUnselectCheckbox" global="false"
+								listener="#{painelApiPgCadeForm.unselectPactoDataModal}"
+								process="@this @form:painelApiPgCade"
+								update="@form:painelApiPgCade:filtrosPainelApiPgCade" />
+
+							<p:ajax event="filter" global="false" disabled="false"
+								process="@this @form:painelApiPgCade" />
+
+							<p:ajax event="page" global="false"
+								process="@this @form:painelApiPgCade" />
+
+							<f:facet name="header">
+								<p:outputPanel rendered="false">
+									<i class="fa fa-search"
+										style="font-size: 16px !important; margin-right: 3px;"></i>
+									<p:inputText id="globalFilter"
+										onkeyup="PF('dataTableListaPactoWidgetVar').filter()"
+										style="width:70%;" placeholder="Digite para pesquisar...">
+										<p:ajax event="keyup" global="false"
+											process="@this @form:painelApiPgCade" />
+										<p:ajax event="keydown" global="false"
+											process="@this @form:painelApiPgCade" />
+										<p:ajax event="keypress" global="false"
+											process="@this @form:painelApiPgCade" />
+									</p:inputText>
+								</p:outputPanel>
+							</f:facet>
+
+							<p:column id="selectAllOrUnselectAll" selectionMode="multiple"
+								width="5%" class="center" />
+
+							<p:column headerText="Plano de Trabalho" width="20%">
+								<div class="center">
+									<h:outputText value="Id Plano: #{_pacto.idPacto}" />
+									<br />
+									<h:outputText
+										value="Modalidade: #{_pacto.modalidadeExecucaoEnum.texto}" />
+									<br />
+									<h:outputText value="Entregue no Prazo? "
+										style="font-weight: bold;" />
+									<h:outputText
+										style="font-weight: bold; color: #{_pacto.entregueNoPrazo eq 'true' ? 'green;' : 'red;'}"
+										value="#{_pacto.entregueNoPrazo eq 'true' ? 'Sim' : 'Não'}" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Planejamento" width="20%">
+								<div class="center">
+									<h:outputText value="Semanal: " />
+									<h:outputText
+										value="#{_pacto.cargaHorariaSemanal.intValue()} horas"
+										style="font-weight: bold;" />
+									<br />
+									<h:outputText value="Total: " />
+									<h:outputText
+										value="#{_pacto.cargaHorariaTotal.intValue()} horas"
+										style="font-weight: bold;" />
+									<br />
+									<h:outputText value="Homologado: " />
+									<h:outputText
+										value="#{_pacto.horasHomologadas.intValue()} horas"
+										style="font-weight: bold;" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Período" width="20%">
+								<div class="center">
+									<h:outputText value="Data Início: " />
+									<h:outputText value="#{_pacto.dataInicio}"
+										style="font-weight: bold;">
+										<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+									</h:outputText>
+									<br />
+									<h:outputText value="Data Fim: " />
+									<h:outputText value="#{_pacto.dataFim}"
+										style="font-weight: bold;">
+										<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+									</h:outputText>
+									<br />
+									<h:outputText value="Data Interrupção: "
+										rendered="#{_pacto.dataInterrupcao ne null}"
+										style="font-weight: bold;" />
+									<h:outputText value="#{_pacto.dataInterrupcao}"
+										rendered="#{_pacto.dataInterrupcao ne null}"
+										style="font-weight: bold; color: red;">
+										<f:convertDateTime pattern="dd/MM/yyyy" type="date" />
+									</h:outputText>
+								</div>
+							</p:column>
+
+							<p:column headerText="Participante" width="25%">
+								<div class="center">
+									<h:outputText value="Unidade: #{_pacto.siglaUnidadeExercicio}"
+										style="font-weight: bold;" />
+									<br />
+									<h:outputText value="Matrícula SIAPE: #{_pacto.matriculaSiape}" />
+									<br />
+									<h:outputText value="CPF: #{_pacto.cpf}" />
+									<br />
+									<h:outputText value="Nome: #{_pacto.nomeParticipante}"
+										style="font-weight: bold;" />
+								</div>
+							</p:column>
+
+							<p:column headerText="Ações" width="10%">
+
+								<div class="center">
+
+									<h:panelGroup
+										rendered="#{painelApiPgCadeForm.getQtdVezesRegistroFoiEnviado(_pacto) == 1}">
+										<i class="fa fa-flag"
+											title="Este Plano de Trabalho foi enviado com sucesso!"
+											style="color: green; cursor: pointer; font-size: 16px !important; margin-right: 10px;"></i>
+									</h:panelGroup>
+
+									<h:panelGroup
+										rendered="#{painelApiPgCadeForm.getQtdVezesRegistroFoiEnviado(_pacto) == 2}">
+										<i class="fa fa-flag"
+											title="Este Plano de Trabalho foi enviado duas vezes!"
+											style="color: orange; cursor: pointer; font-size: 16px !important; margin-right: 10px;"></i>
+									</h:panelGroup>
+
+									<h:panelGroup
+										rendered="#{painelApiPgCadeForm.getQtdVezesRegistroFoiEnviado(_pacto) gt 2}">
+										<i class="fa fa-flag"
+											title="Este Plano de Trabalho foi enviado várias vezes!"
+											style="color: red; cursor: pointer; font-size: 16px !important; margin-right: 10px;"></i>
+									</h:panelGroup>
+
+									<p:commandLink process="@this"
+										action="#{painelApiPgCadeAction.selecionarPacto(_pacto)}"
+										title="Visualizar" update="@form:modalDetalhePacto"
+										oncomplete="PF('modalDetalhePactoWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_API_PG_CADE')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-search-plus"
+											style="font-size: 16px !important; margin-right: 10px;"></i>
+									</p:commandLink>
+
+									<p:commandLink process="@this"
+										action="#{painelApiPgCadeAction.selecionarPacto(_pacto)}"
+										title="Atividades" update="@form:modalDetalheProduto"
+										oncomplete="PF('modalDetalheProdutoWidgetVar').show();"
+										rendered="#{usuarioLogado.usuario.getFuncaoPorPaginaAcesso(restricoesControleAcesso.getPaginaAcesso('PAINEL_API_PG_CADE')).situacaoVisualizar eq restricoesControleAcesso.getSituacaoPermissao('SIM')}">
+										<i class="fa fa-table" style="font-size: 16px !important;"></i>
+									</p:commandLink>
+								</div>
+
+							</p:column>
+
+						</p:dataTable>
+
+					</div>
+
+					<div class="card-footer small text-muted">Lista de Planos
+						Cadastrados.</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</div>
+
+	<script type="text/javascript">
+		//<![CDATA[
+			
+			function ajustesCSS() {
+				$('span[id$="dtAvaliacao"]').css('display','flex');
+				$('span[id$="dtInicialPeriodoInicio"]').css('display','flex');
+				$('span[id$="dtFinalPeriodoInicio"]').css('display','flex');
+				$('span[id$="dtInterrupcao"]').css('display','flex');
+			}
+			
+			$(document).ready(function() {
+				ajustesCSS();
+			});
+           	
+       	//]]>
+   	</script>
+
+</ui:component>

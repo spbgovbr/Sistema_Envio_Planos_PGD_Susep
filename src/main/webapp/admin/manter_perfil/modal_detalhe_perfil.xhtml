@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<p:dialog id="modalDetalhePerfil"
+		widgetVar="modalDetalhePerfilWidgetVar" header="Visualizar Perfil"
+		modal="true" closable="true" dynamic="true" height="250" width="800">
+
+		<p:panel header="Dados do Perfil">
+
+			<h:panelGrid columns="4">
+
+				<h:outputText value="Id: " styleClass="font-negrito" />
+				<h:outputText value="#{perfilForm.perfilSelecionado.id}" />
+				
+				<h:outputText value="Situação: " styleClass="font-negrito" />
+				<h:outputText id="visualSituacao"
+					value="#{perfilForm.perfilSelecionado.situacaoRegistro.descricao}" />
+
+				<h:outputText value="Descrição: " styleClass="font-negrito" />
+				<h:outputText value="#{perfilForm.perfilSelecionado.descricao}" />
+
+				<h:outputText value="Detalhe: " styleClass="font-negrito" />
+				<h:outputText value="#{perfilForm.perfilSelecionado.detalhe}" />
+
+			</h:panelGrid>
+
+		</p:panel>
+
+		<div style="padding-top: 10px; padding-bottom: 20px;">
+
+			<p:commandButton value="Fechar" icon="ui-icon-close"
+				update="@form:painelPerfil"
+				onclick="PF('modalDetalhePerfilWidgetVar').hide();"
+				style="padding: 3px; margin: 0; text-shadow: none; box-shadow: none; border: 1px solid #a8a8a8;"
+				styleClass="btn btn-default" />
+
+		</div>
+
+	</p:dialog>
+
+</ui:component>

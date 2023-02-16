@@ -1,0 +1,61 @@
+---
+version: '3.9'
+
+services:
+  
+  bdpgdsusep:
+    image: cadegovbr/bdpgdsusep
+    container_name: bdpgdsusep
+    restart: always
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "@apipgdsusep#123"
+    networks:
+      - apisusep-network
+    volumes:
+      - "bdpgdsusep:/var/opt/mssql"
+  
+  apiprogramagestaosusep:
+    image: cadegovbr/apiprogramagestaosusep
+    container_name: apiprogramagestaosusep
+    restart: always
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+      WILDFLY_USERNAME: "admin"
+      WILDFLY_PASSWORD: "4dm1n"
+      DATABASE_APIPGD_USER: "sa"
+      DATABASE_APIPGD_PASSWORD: "@apipgdsusep#123"
+      DATABASE_APIPGD_URL: "jdbc:sqlserver://10.1.11.103:1433;databaseName=apipgd"
+      DATABASE_PGD_USER: "sa"
+      DATABASE_PGD_PASSWORD: "@apipgdsusep#123"
+      DATABASE_PGD_URL: "jdbc:sqlserver://10.1.11.103:1433;databaseName=ProgramaGestao"
+      DATABASE_SCHEMA_NAME: "ProgramaGestao"
+      APIPGDME_URL: "http://hom.api.programadegestao.economia.gov.br"
+      APIPGDME_AUTH_USER: "felipe.dias@cade.gov.br"
+      APIPGDME_AUTH_PASSWORD: ""
+      MAIL_RECIPIENTS_TO: "email1@gov.br,email2@gov.br"
+      MAIL_RECIPIENTS_CC: "email3@gov.br,email4@gov.br"
+      MAIL_HOST: ""
+      MAIL_PORT: ""
+      MAIL_USER: ""
+      MAIL_PASSWORD: ""
+      MAIL_SMTP_AUTH: "true"
+      MAIL_SMTP_STARTTLS_ENABLE: "false"
+      MAIL_SMTP_STARTTLS_REQUIRED: "false"
+      MAIL_SMTP_SSL_ENABLE: "false"
+      TZ: "America/Sao_Paulo"
+    networks:
+      - apisusep-network
+    depends_on:
+      - bdpgdsusep
+  
+volumes:
+  bdpgdsusep:
+
+networks:
+  apisusep-network:
+    driver: bridge

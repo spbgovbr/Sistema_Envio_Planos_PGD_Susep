@@ -1,0 +1,64 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/WEB-INF/template.xhtml">
+
+	<ui:define name="title">
+    	Menu
+    </ui:define>
+
+	<ui:define name="content">
+
+		<div class="container">
+
+			<h2
+				class="page-section-heading text-center text-uppercase text-secondary mb-0">Menu</h2>
+
+			<div class="divider-custom">
+				<div class="divider-custom-line"></div>
+				<div class="divider-custom-icon">
+					<i class="fas fa-th"></i>
+				</div>
+				<div class="divider-custom-line"></div>
+			</div>
+
+			<div class="row">
+
+				<div class="col-lg-12 mx-auto">
+
+					<p:dataGrid id="paginasUsuario" paginator="false" var="_pagina"
+						value="#{usuarioLogado.usuario.paginasAcessoUsuario}" columns="3"
+						layout="grid" rows="24">
+
+						<f:facet name="header">
+				            Clique no ícone para acessar a funcionalidade
+				        </f:facet>
+
+						<p:panel header="#{_pagina.nome}" style="text-align:center"
+							rendered="#{_pagina.name() ne 'PAINEL_FUNCIONALIDADES'}">
+
+							<h:panelGrid columns="1" style="width:100%">
+
+								<div class="divider-custom-icon">
+									<p:commandLink update="@form"
+										action="#{restricoesControleAcesso.redirecionarPara(_pagina)}">
+										<i class="fa #{_pagina.icone}" style="font-size: 40px;"></i>
+									</p:commandLink>
+								</div>
+
+							</h:panelGrid>
+
+						</p:panel>
+
+					</p:dataGrid>
+
+				</div>
+
+			</div>
+
+		</div>
+
+	</ui:define>
+
+</ui:composition>
