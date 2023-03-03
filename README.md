@@ -1,92 +1,144 @@
-# api-pgd-susep
+# Módulo de Envio de Planos de Trabalho do Programa de Gestão (sistema SUSEP)
+Autoria:CADE/ME
 
+Contêiner do módulo de Envio de Planos de Trabalho do Programa de Gestão (PGD). O Software tem como objetivo realizar o gerenciamento (envio/consulta) dos Planos de Trabalhos do Programa de Gestão (Projeto de Transformação Digital).
 
+**Observação: esta API foi desenvolvida com base no Sistema da SUSEP.**
 
-## Getting started
+[Sistema do Programa de Gestão - PG_ME_SUSEP](https://github.com/spbgovbr/Sistema_Programa_de_Gestao_Susep)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+**Observação: é necessário criar as tables e views da API PGD. Favor, utilizar os scripts SQL abaixo:**
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+**Observação: é altamente recomendável criar um novo banco de dados para as tabelas API PGD (databaseName=APIPGD). As view são criadas na mesma estrutura do banco de dados do programa de gestão (databaseName=PGD). PGD é o nome do seu banco de dados do Programa de Gestão.**
 
-## Add your files
+[CREATE_TABLES_SQL_SERVER_SUSEP - PG_ME_SUSEP](https://github.com/spbgovbr/Sistema_Programa_de_Gestao_Susep/blob/main/Script%201%20-%20CREATE_TABLES_SQL_SERVER_SUSEP.sql)
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+[VIEWS_API_PGD_SUSEP - PG_ME_SUSEP](https://github.com/spbgovbr/Sistema_Programa_de_Gestao_Susep/blob/main/Script%202%20-%20VIEWS_API_PGD_SUSEP.sql)
 
+**Observação: é necessário verificar se as views da API PGD foram criadas no schema dbo.*.**
+
+DATABASE_SCHEMA_NAME: informar o nome do schema do banco de dados do programa de gestão. Para maiores detalhes, favor consultar a seção **Parâmetros do contêiner**.
+
+APIPGDME_URL: informar a url de conexão com a API PGD ME sem /docs.
+
+**URL Homologação:** http://hom.api.programadegestao.economia.gov.br
+
+**URL Produção:** https://api-programadegestao.economia.gov.br
+
+# Releases de versão da imagem
+
+**1.0: versão mais recente**
+- Melhoria no desempenho das páginas:
+  - API PG - Enviar Planos
+  - API PG - Planos Enviados
+  - Logs
+- Implementação completa do Cadastro de um Novo Usuário:
+  - Removido a opção cadastrar senha para um novo usuário
+  - Envio de e-mail para um novo usuário com senha
+- Painel de Alteração de Senha:
+  - Implementação da funcionalidade Alterar Senha
+  - Necessário: 
+    - Adicionar a nova funcionalidade em Funções (Nova Função > Descrição: Alterar Senha > Página Acesso: PAINEL_ALTERAR_SENHA > Salvar)
+    - Sair e efetuar o login novamente para atualizar a nova Função
+    - Adicionar a nova funcionalidade em Perfis (Manter Funções do Perfil (ícone engrenagem) > Função: Alterar Senha > Adicionar Função > Alterar: Sim > Visualizar: Sim > Salvar)
+    - Sair e efetuar o login novamente para carregar as permissões do Perfil
+- Usuários:
+  - Implementação da funcionalidade Resetar Senha
+- Versão estável
+
+# Atualização de versão da imagem
+
+**Observação: caso deseje obter atualizações de novas versões da imagem, por gentileza, remova a imagem local e efetue um novo download diretamente do repositório:**
+
+```shell
+docker pull cadegovbr/apiprogramagestaosusep
 ```
-cd existing_repo
-git remote add origin https://gitlab.cade.gov.br/cade/project-cade-rest-api/api-pgd-susep.git
-git branch -M main
-git push -uf origin main
+# Atualização de Segurança: Apache Log4j 2 CVE-2021-44228 vulnerability
+
+### Update Dockerfile:
+ADD standalone.sh with parameter -Dlog4j.formatMsgNoLookups=true
+
+Fonte: [Get the latest on Apache Log4j 2 CVE-2021-44228 vulnerability from Docker](https://www.docker.com/blog/apache-log4j-2-cve-2021-44228/)
+
+### Update Maven log4j2.version:
+```shell
+<properties>
+    <log4j2.version>2.17.1</log4j2.version>
+</properties>
+```
+Fonte: [Log4J2 Vulnerability and Spring Boot](https://spring.io/blog/2021/12/10/log4j2-vulnerability-and-spring-boot)
+
+## Passos Iniciais
+
+As instruções a seguir são informações necessárias para a utilização de contêiners docker.
+
+### Pré-requisitos
+
+Para executar este contêiner, você precisará do docker instalado.
+
+* [Windows](https://docs.docker.com/windows/started)
+* [OS X](https://docs.docker.com/mac/started/)
+* [Linux](https://docs.docker.com/linux/started/)
+
+### Parâmetros do contêiner
+
+Parâmetros disponíveis para o seu contêiner.
+
+```shell
+docker run -p 8080:8080 -p 9990:9990 -e WILDFLY_USERNAME="admin" -e WILDFLY_PASSWORD="4dm1n" \ 
+-e DATABASE_APIPGD_USER="user" -e DATABASE_APIPGD_PASSWORD="passwd" -e DATABASE_APIPGD_URL="jdbc:sqlserver://host:1433;databaseName=APIPGD" \ 
+-e DATABASE_PGD_USER="user" -e DATABASE_PGD_PASSWORD="passwd" -e DATABASE_PGD_URL="jdbc:sqlserver://host:1433;databaseName=PGD" \ 
+-e DATABASE_SCHEMA_NAME="PGD" -e APIPGDME_URL="url" -e APIPGDME_AUTH_USER="user" -e APIPGDME_AUTH_PASSWORD="passwd" \
+-e MAIL_RECIPIENTS_TO="aaa@email.com,bbb@email.com" -e MAIL_RECIPIENTS_CC="aaa@email.com,bbb@email.com" -e MAIL_HOST="smtp" -e MAIL_PORT="25" \
+-e MAIL_USER="user" -e MAIL_PASSWORD="passwd" -e MAIL_SMTP_AUTH="true" -e MAIL_SMTP_STARTTLS_ENABLE="false" \ 
+-e MAIL_SMTP_STARTTLS_REQUIRED="false" -e MAIL_SMTP_SSL_ENABLE="false" -e TZ="America/Sao_Paulo" cadegovbr/apiprogramagestaosusep
 ```
 
-## Integrate with your tools
+#### Variáveis de Ambiente
 
-- [ ] [Set up project integrations](https://gitlab.cade.gov.br/cade/project-cade-rest-api/api-pgd-susep/-/settings/integrations)
+* `WILDFLY_USERNAME` - Usuário de administração do WildFly.
+* `WILDFLY_PASSWORD` - Senha do Usuário de administração do WildFly.
+* `DATABASE_APIPGD_URL` - URL para conexão com o banco de dados da API PGD.
+* `DATABASE_APIPGD_USER` - Usuário do banco de dados da API PGD.
+* `DATABASE_APIPGD_PASSWORD` - Senha do Usuário do banco de dados da API PGD.
+* `DATABASE_PGD_URL` - URL para conexão com o banco de dados do PGD.
+* `DATABASE_SCHEMA_NAME` - Nome do schema do banco de dados do PGD.
+* `DATABASE_PGD_USER` - Usuário do banco de dados do PGD.
+* `DATABASE_PGD_PASSWORD` - Senha do Usuário do banco de dados do PGD.
+* `APIPGDME_URL` - Url de conexão com a API PGD ME.
+* `APIPGDME_AUTH_USER` - Usuário de conexão com a API PGD ME.
+* `APIPGDME_AUTH_PASSWORD` - Senha do Usuário de conexão com a API PGD ME.
+* `MAIL_RECIPIENTS_TO` - E-mails dos destinatários que irão receber mensagens da API (for multiple recipients = [aaa@email.com](mailto:aaa@email.com),[bbb@email.com](mailto:bbb@email.com)).
+* `MAIL_RECIPIENTS_CC` (opcional) - E-mails dos destinatários (em cópia) que irão receber mensagens da API (for multiple recipients = [aaa@email.com](mailto:aaa@email.com),[bbb@email.com](mailto:bbb@email.com)).
+* `MAIL_HOST` - Endereço IP ou DNS do Host SMTP.
+* `MAIL_PORT` - Porta do Host SMTP.
+* `MAIL_USER` - E-mail do usuário.
+* `MAIL_PASSWORD` - Senha de e-mail do usuário.
+* `MAIL_SMTP_AUTH` - Flag indicando se há autenticação SMTP. ["true", "false"]
+* `MAIL_SMTP_STARTTLS_ENABLE` - Flag indicando se há TLS habilitado no SMTP. ["true", "false"]
+* `MAIL_SMTP_STARTTLS_REQUIRED` - Flag indicando se o SMTP requer TLS. ["true", "false"]
+* `MAIL_SMTP_SSL_ENABLE` - Flag indicando se há SSL habilitado no SMTP. ["true", "false"]
+* `TZ` - Timezone. Horário Brasileiro: "America/Sao_Paulo"
 
-## Collaborate with your team
+## Arquitetura do Módulo de Envio de Planos de Trabalho do Programa de Gestão (PGD)
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+* SpringBoot 2.3.9.RELEASE
+* JSF 2+
 
-## Test and Deploy
+## Encontre-nos
 
-Use the built-in continuous integration in GitLab.
+* [GitHub](https://github.com/spbgovbr/Sistema_Envio_Planos_PGD_Susep)
+* [Docker](https://hub.docker.com/u/cadegovbr)
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+## Versionamento
 
-***
+Nós utilizamos o [GitLab](https://github.com/spbgovbr/Sistema_Envio_Planos_PGD_Susep) para versionamento.
 
-# Editing this README
+## Autores
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!).  Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+* **Conselho Administrativo de Defesa Econômica - CADE** - [CADE](https://www.gov.br/cade/pt-br)
+* **Ministério da Economia - ME** - [ME](https://www.gov.br/economia/pt-br)
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+## Licença
 
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+Todos os softwares utilizados neste projeto possuem licença de código aberto.
