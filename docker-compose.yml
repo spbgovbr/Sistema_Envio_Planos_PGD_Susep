@@ -47,6 +47,7 @@ services:
       MAIL_SMTP_STARTTLS_ENABLE: "false"
       MAIL_SMTP_STARTTLS_REQUIRED: "false"
       MAIL_SMTP_SSL_ENABLE: "false"
+      JAVA_OPTS: "-Dlog4j.formatMsgNoLookups=true"
       TZ: "America/Sao_Paulo"
     networks:
       - apisusep-network
